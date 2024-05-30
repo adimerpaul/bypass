@@ -39,33 +39,7 @@
             <Card2Component color="purple-8" title="Total Ganancias" :subtitle="totalCost + ' $'" :icon="'attach_money'"/>
           </div>
           <div class="col-12">
-            <div class="row">
-              <div class="col-6 col-md-2" v-for="product in products" :key="product.id">
-                <q-card class="q-ma-xs cursor-pointer" flat bordered @click="productEditClick(product)">
-                  <q-img
-                    :src="`${$url}../images/${product.image}`"
-                    spinner-color="white"
-                    spinner-size="40"
-                    style="height: 150px;background: linear-gradient(rgba(74,20,140,0.5), rgba(74,20,140,0));"
-                  >
-                    <div class="absolute-bottom lobster"
-                         style="padding: 5px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7)); color: white;line-height: 1">
-                      {{ $filters.capitalize(product.name)}}
-                      <div class="row items-center">
-                        <div class="text-bold text-center q-pl-xs">
-                          {{product.stock}}
-                        </div>
-                        <q-space />
-                        <div class="text-bold text-center q-pr-xs">
-                          <q-icon name="attach_money" />
-                          {{product.price}} Bs
-                        </div>
-                      </div>
-                    </div>
-                  </q-img>
-                </q-card>
-              </div>
-            </div>
+            <ProductCard :products="products" @productClick="productEditClick"/>
           </div>
 <!--          <div class="col-12">-->
 <!--            <pre>{{products}}</pre>-->
@@ -91,6 +65,7 @@
                   @click="$refs.file.click()"
                   class="bg-grey-3"
                   text-color="grey-8"
+                  rounded
                   size="100px">
                   <q-img
                     :src="product.image.includes('http')?product.image:`${$url}../images/${product.image}`"
@@ -144,9 +119,9 @@
               </div>
               <div class="col-12">
                 <label class="text-caption text-bold">Estado:</label>
-                <q-toggle v-model="product.status" :color="product.status ? 'green' : 'red'" true-value="1" false-value="0">
-                  <div :class="`text-${product.status ? 'green' : 'red'} text-subtitle2 text-bold`">
-                    {{product.status ? 'Activo' : 'Inactivo'}}
+                <q-toggle v-model="product.status" :color="product.status ? 'green' : 'red'" true-value="ACTIVE" false-value="INACTIVE">
+                  <div :class="`text-${product.status === 'ACTIVE' ? 'green' : 'red'} text-subtitle2 text-bold`">
+                    {{product.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}}
                   </div>
                 </q-toggle>
               </div>
@@ -193,11 +168,12 @@
   </q-page>
 </template>
 <script>
-import Card2Component from "components/Card2Component.vue";
+import ProductCard from "./ProductCard.vue";
+import Card2Component from "../../components/Card2Component.vue";
 
 export default {
   name: 'ProductsIndex',
-  components: {Card2Component},
+  components: {ProductCard, Card2Component},
   data () {
     return {
       products: [],
