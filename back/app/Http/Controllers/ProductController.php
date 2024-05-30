@@ -10,24 +10,25 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Product::orderBy('id', 'desc')->get();
+        return Product::with('category')->orderBy('id', 'desc')->get();
     }
 
     public function store(Request $request)
     {
+        error_log(json_encode($request->user()->id));
         $file = $request->file('file');
         $productRequest = json_decode($request->product, true);
         $fileName = $this->uploadFileResize($file);
         $product = Product::create([
             'name' => $productRequest['name'],
-            'description' => $productRequest['description'] == '' ? 'Sin descripción' : $productRequest['description'],
+//            'description' => $productRequest['description'] == '' ? 'Sin descripción' : $productRequest['description'],
             'image' => $fileName,
             'price' => $productRequest['price'],
-            'costo' => $productRequest['costo'],
+            'costo' => floatval($productRequest['costo']),
             'status' => $productRequest['status'],
-            'stock' => $productRequest['stock'],
+            'stock' => intval($productRequest['stock']),
             'category_id' => $productRequest['category_id'],
-            'user_id' => $request->user()->id,
+//            'user_id' => $request->user()->id,
         ]);
         return response()->json($product, 201);
     }

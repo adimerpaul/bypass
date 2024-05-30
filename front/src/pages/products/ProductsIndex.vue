@@ -16,6 +16,7 @@
               icon="get_app"
               flat
               rounded
+              @click="downloadExcel"
             ></q-btn>
           </div>
           <div class="col-12 col-md-6 text-right">
@@ -42,9 +43,9 @@
           <div class="col-12">
             <ProductCard :products="products" @productClick="productEditClick" :categories="categoryMoreAll" @categoryClick="categoryClick"/>
           </div>
-<!--          <div class="col-12">-->
-<!--            <pre>{{products}}</pre>-->
-<!--          </div>-->
+          <div class="col-12">
+            <pre>{{products}}</pre>
+          </div>
         </div>
       </q-card-section>
     </q-card>
@@ -102,7 +103,7 @@
               </div>
               <div class="col-12">
                 <label class="text-caption text-bold">Cantidad:</label>
-                <q-input v-model="product.stock" outlined dense type="number" :rules="[val => !!val || 'Campo requerido']" />
+                <q-input v-model="product.stock" outlined dense type="number" hint="" />
               </div>
               <div class="col-12">
                 <label class="text-caption text-bold">Categoria:</label>
@@ -171,6 +172,7 @@
 <script>
 import ProductCard from "./ProductCard.vue";
 import Card2Component from "../../components/Card2Component.vue";
+import {Excel} from "src/addons/Excel";
 
 export default {
   name: 'ProductsIndex',
@@ -192,6 +194,20 @@ export default {
     this.categoriesGet()
   },
   methods: {
+    downloadExcel () {
+      let data = [{
+        columns: [
+          {label: 'Nombre', value: 'name'},
+          {label: 'Precio', value: 'price'},
+          {label: 'Costo', value: 'costo'},
+          {label: 'Stock', value: 'stock'},
+          {label: 'Categoria', value: 'category.name'},
+          {label: 'Estado', value: 'status'},
+        ],
+        content: this.products
+      }]
+      Excel.export(data, 'Productos')
+    },
     productFilter (filter) {
       if (filter) {
         this.products = this.productsAll.filter(product => product.name.toLowerCase().includes(filter.toLowerCase()))
