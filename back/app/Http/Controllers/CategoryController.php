@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller{
     public function  index(){
-        return Category::orderBy('id', 'desc')->get();
+        return Category::orderBy('id', 'asc')->get();
     }
 }

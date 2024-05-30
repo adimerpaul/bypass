@@ -4,7 +4,8 @@
       <q-card-section class="q-pa-xs">
         <div class="row">
           <div class="col-12 col-md-4">
-            <q-input v-model="search" label="Buscar" outlined dense />
+            <q-input v-model="search" label="Buscar" outlined dense clearable
+                     @update:modelValue="productFilter"/>
           </div>
           <div class="col-12 col-md-2">
             <q-btn
@@ -39,7 +40,7 @@
             <Card2Component color="purple-8" title="Total Ganancias" :subtitle="totalCost + ' $'" :icon="'attach_money'"/>
           </div>
           <div class="col-12">
-            <ProductCard :products="products" @productClick="productEditClick"/>
+            <ProductCard :products="products" @productClick="productEditClick" :categories="categoryMoreAll" @categoryClick="categoryClick"/>
           </div>
 <!--          <div class="col-12">-->
 <!--            <pre>{{products}}</pre>-->
@@ -66,12 +67,12 @@
                   class="bg-grey-3"
                   text-color="grey-8"
                   rounded
-                  size="100px">
+                  size="200px">
                   <q-img
                     :src="product.image.includes('http')?product.image:`${$url}../images/${product.image}`"
                     spinner-color="grey-8"
                     spinner-size="40"
-                    style="height: 100px"
+                    style="height: 200px"
                   />
                   <q-badge
                     color="grey-8"
@@ -87,17 +88,17 @@
                 <label class="text-caption text-bold">Nombre:</label>
                 <q-input v-model="product.name" outlined dense :rules="[val => !!val || 'Campo requerido']" />
               </div>
-              <div class="col-12">
-                <label class="text-caption text-bold">Descripcion:</label>
-                <q-input v-model="product.description" outlined dense type="textarea" />
-              </div>
+<!--              <div class="col-12">-->
+<!--                <label class="text-caption text-bold">Descripcion:</label>-->
+<!--                <q-input v-model="product.description" outlined dense type="textarea" />-->
+<!--              </div>-->
               <div class="col-12 col-md-6">
                 <label class="text-caption text-bold">Precio:</label>
                 <q-input v-model="product.price" outlined dense type="number" step="0.01" :rules="[val => !!val || 'Campo requerido']" />
               </div>
               <div class="col-12 col-md-6">
                 <label class="text-caption text-bold">Costo:</label>
-                <q-input v-model="product.costo" outlined dense type="number" step="0.01" :rules="[val => !!val || 'Campo requerido']" />
+                <q-input v-model="product.costo" outlined dense type="number" step="0.01" />
               </div>
               <div class="col-12">
                 <label class="text-caption text-bold">Cantidad:</label>
@@ -128,7 +129,7 @@
             </div>
             <div>
               <q-btn
-                color="primary"
+                color="green"
                 label="Guardar"
                 class="text-bold full-width"
                 type="submit"
@@ -177,6 +178,7 @@ export default {
   data () {
     return {
       products: [],
+      productsAll: [],
       product: {},
       categories: [],
       category: '',
@@ -190,6 +192,13 @@ export default {
     this.categoriesGet()
   },
   methods: {
+    productFilter (filter) {
+      if (filter) {
+        this.products = this.productsAll.filter(product => product.name.toLowerCase().includes(filter.toLowerCase()))
+      } else {
+        this.products = this.productsAll
+      }
+    },
     productDelete () {
       this.$alert.confirm('¿Estas seguro de eliminar este producto?').onOk(() => {
         this.loading = true
@@ -274,8 +283,17 @@ export default {
         price: '',
         stock: '',
         image: 'images.png',
-        status: '1',
+        status: 'ACTIVE',
         costo: '',
+      }
+    },
+    categoryClick (category) {
+      // console.log('categoryClick', category)
+      this.category = category.id
+      if (category.id) {
+        this.products = this.productsAll.filter(product => product.category_id === category.id)
+      } else {
+        this.products = this.productsAll
       }
     },
     productEditClick (product) {
@@ -285,6 +303,7 @@ export default {
     productsGet () {
       this.$axios.get('products').then(response => {
         this.products = response.data
+        this.productsAll = response.data
       })
     },
     categoriesGet () {
@@ -294,6 +313,12 @@ export default {
     },
   },
   computed: {
+    categoryMoreAll () {
+      return [
+        {id: '', name: 'Todo', icon: 'fa-solid fa-globe'},
+        ...this.categories
+      ]
+    },
     totalPrice () {
       let total = 0
       this.products.forEach(product => {
