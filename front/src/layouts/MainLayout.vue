@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          <div class="text-primary text-bold">
+          <div class="text-black text-bold">
             {{title}}
           </div>
         </q-toolbar-title>
@@ -95,10 +95,10 @@
         <q-footer>
           <q-item clickable dense v-ripple @click="logout">
             <q-item-section avatar>
-              <q-avatar text-color="red" icon="logout" size="38px" />
+              <q-avatar text-color="white" icon="logout" size="38px" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-red text-bold">Cerrar Sesión</q-item-label>
+              <q-item-label class="text-white text-bold">Cerrar Sesión</q-item-label>
             </q-item-section>
           </q-item>
         </q-footer>

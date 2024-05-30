@@ -46,18 +46,19 @@
                     :src="`${$url}../images/${product.image}`"
                     spinner-color="white"
                     spinner-size="40"
-                    style="height: 100px"
+                    style="height: 150px;background: linear-gradient(rgba(74,20,140,0.5), rgba(74,20,140,0));"
                   >
-                    <div class="absolute-bottom text-subtitle2 text-center text-bold"
-                         style="padding: 0px; background: linear-gradient(rgba(0,0,0,0.05), rgba(0,0,0,0.7)); color: white;line-height: 1;">
-                      {{product.name}}
+                    <div class="absolute-bottom lobster"
+                         style="padding: 5px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7)); color: white;line-height: 1">
+                      {{ $filters.capitalize(product.name)}}
                       <div class="row items-center">
                         <div class="text-bold text-center q-pl-xs">
                           {{product.stock}}
                         </div>
                         <q-space />
                         <div class="text-bold text-center q-pr-xs">
-                          {{product.price}} $
+                          <q-icon name="attach_money" />
+                          {{product.price}} Bs
                         </div>
                       </div>
                     </div>
