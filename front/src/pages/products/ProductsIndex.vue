@@ -43,9 +43,9 @@
           <div class="col-12">
             <ProductCard :products="products" @productClick="productEditClick" :categories="categoryMoreAll" @categoryClick="categoryClick"/>
           </div>
-          <div class="col-12">
-            <pre>{{products}}</pre>
-          </div>
+<!--          <div class="col-12">-->
+<!--            <pre>{{products}}</pre>-->
+<!--          </div>-->
         </div>
       </q-card-section>
     </q-card>
@@ -220,7 +220,8 @@ export default {
         this.loading = true
         this.$axios.delete(`products/${this.product.id}`).then(response => {
           this.productDialog = false
-          this.productsGet()
+          const index = this.products.findIndex(product => product.id === response.data.id)
+          this.products.splice(index, 1)
         }).finally(() => {
           this.loading = false
         })
@@ -260,7 +261,7 @@ export default {
         }
       }).then(response => {
         this.productDialog = false
-        this.productsGet()
+        this.products.unshift(response.data)
       }).finally(() => {
         this.loading = false
       })
@@ -278,7 +279,8 @@ export default {
         }
       }).then(response => {
         this.productDialog = false
-        this.productsGet()
+        const index = this.products.findIndex(product => product.id === response.data.id)
+        this.products.splice(index, 1, response.data)
       }).finally(() => {
         this.loading = false
       })

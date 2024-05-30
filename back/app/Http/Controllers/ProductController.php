@@ -49,7 +49,7 @@ class ProductController extends Controller
     public function destroy($id){
         $product = Product::find($id);
         $product->delete();
-        return response()->json(null, 204);
+        return response()->json($product, 200);
     }
     public function uploadFileResize($file){
         if(file_exists($file)){

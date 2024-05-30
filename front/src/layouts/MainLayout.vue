@@ -119,9 +119,6 @@ export default {
       essentialLinks: [
         { title: 'Inicio', icon: 'home', to: '/' },
         { title: 'Usuarios', icon: 'people', to: '/users' },
-        { title: 'Empresas', icon: 'business', to: '/companies' },
-        { title: 'Botes', icon: 'directions_boat', to: '/boats' },
-        { title: 'Tripulantes', icon: 'group', to: '/crews' },
         { title: 'Clientes', icon: 'person', to: '/clients' },
         { title: 'Productos', icon: 'shopping_cart', to: '/products' }
       ],
