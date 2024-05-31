@@ -60,11 +60,9 @@ export default {
   },
   methods: {
     productClick(product) {
-      // console.log('productClick', product)
       this.$emit('productClick', product)
     },
     categoryClick(category) {
-      // console.log('categoryClick', category)
       this.$emit('categoryClick', category)
     }
   }
