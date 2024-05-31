@@ -18,6 +18,35 @@
               </div>
             </div>
           </div>
+          <div class="col-12 col-md-4">
+            <q-card>
+              <q-card-section class="q-pa-xs row items-center bg-yellow">
+                <div class="text-subtitle1 text-bold text-black">
+                  Carrito
+                </div>
+              </q-card-section>
+              <q-card-section class="q-pa-xs">
+                <div class="row">
+                  <div class="col-12">
+                    <q-list bordered>
+                      <q-item v-for="product in products" :key="product.id">
+                        <q-item-section>
+                          <q-item-label>{{product.name}}</q-item-label>
+                          <q-item-label>{{product.price}}</q-item-label>
+                        </q-item-section>
+                        <q-item-section side>
+                          <q-btn flat icon="fa-solid fa-trash" @click="removeProduct(product)"/>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </div>
+                  <div class="col-12">
+                    <q-btn color="primary" label="Pagar" @click="pay"/>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
       </q-card-section>
     </q-card>
