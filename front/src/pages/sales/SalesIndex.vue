@@ -7,7 +7,7 @@
             <div class="row">
               <div class="col-12 col-md-4">
                 <q-input v-model="search" label="Buscar" outlined dense clearable
-                         @update:modelValue="productFilter"/>
+                         @update:modelValue="productFilter" :loading="loading"/>
               </div>
               <div class="col-12 col-md-2">
               </div>
@@ -25,7 +25,7 @@
                   Carrito
                 </div>
                 <q-space />
-                <q-btn color="red" label="Limpiar Carrito" dense no-caps class="text-bold" size="10px" icon="o_delete" @click="$store.orders = []"/>
+                <q-btn color="red" label="Limpiar Carrito" dense no-caps class="text-bold" size="10px" icon="o_delete" @click="$store.orders = []" :loading="loading"/>
               </q-card-section>
               <q-card-section class="q-pa-xs">
                 <div class="row">
@@ -55,7 +55,7 @@
                             </div>
                           </q-item-label>
                         </q-item-section>
-                        <q-item-section class="text-right">
+                        <q-item-section class="text-right" side>
                           <q-item-label class="text-red text-bold text-h6">
                             {{ (product.price * product.cantidadSale).toFixed(2) }}
                             <q-btn dense flat rounded icon="delete" size="10px" color="red" @click="$store.orders.splice($store.orders.indexOf(product), 1)"/>
@@ -77,7 +77,7 @@
                   </div>
                   <div class="col-12">
                     <q-card-section class="q-pa-xs">
-                      <q-btn color="indigo" label="Pagar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay"/>
+                      <q-btn color="indigo" label="Pagar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
                     </q-card-section>
                   </div>
                 </div>
@@ -227,9 +227,12 @@ export default {
       });
     },
     getProducts() {
+      this.loading = true;
       this.$axios.get('products').then(response => {
         this.products = response.data;
         this.productsAll = response.data;
+      }).finally(() => {
+        this.loading = false;
       });
     },
     productFilter(data) {

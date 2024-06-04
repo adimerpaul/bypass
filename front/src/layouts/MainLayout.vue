@@ -119,6 +119,9 @@ export default {
       essentialLinks: [
         { title: 'Inicio', icon: 'home', to: '/' },
         { title: 'Ventas', icon: 'shopping_basket', to: '/sales' },
+        { title: 'Insumos', icon: 'inventory_2', to: '/supplies' },
+        { title: 'Compras', icon: 'shopping_cart', to: '/purchases' },
+        { title: 'Diarios', icon: 'assignment', to: '/diaries' },
         { title: 'Productos', icon: 'shopping_cart', to: '/products' },
         { title: 'Usuarios', icon: 'people', to: '/users' },
         { title: 'Clientes', icon: 'person', to: '/clients' },
