@@ -17,9 +17,9 @@
                style="padding: 5px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7)); color: white;line-height: 1">
             {{ $filters.capitalize(product.name)}}
             <div class="row items-center">
-              <div class="text-bold text-center q-pl-xs">
-                {{product.stock}}
-              </div>
+<!--              <div class="text-bold text-center q-pl-xs">-->
+<!--                {{product.stock}}-->
+<!--              </div>-->
               <q-space />
               <div class="text-bold text-center q-pr-xs">
                 {{product.price}}

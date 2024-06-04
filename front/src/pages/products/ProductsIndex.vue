@@ -35,7 +35,7 @@
             <Card2Component color="green-8" title="Productos" :subtitle="products.length + ' Unid'" :icon="'all_inbox'"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <Card2Component color="indigo-8" title="Total Stock" :subtitle="totalPrice + ' $'" :icon="'shopping_cart'"/>
+            <Card2Component color="indigo-8" title="Total Stock" :subtitle="'0.00' + ' $'" :icon="'shopping_cart'"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
             <Card2Component color="purple-8" title="Total Ganancias" :subtitle="totalCost + ' $'" :icon="'attach_money'"/>
@@ -97,14 +97,14 @@
                 <label class="text-caption text-bold">Precio:</label>
                 <q-input v-model="product.price" outlined dense type="number" step="0.01" :rules="[val => !!val || 'Campo requerido']" />
               </div>
-              <div class="col-12 col-md-6">
-                <label class="text-caption text-bold">Costo:</label>
-                <q-input v-model="product.costo" outlined dense type="number" step="0.01" />
-              </div>
-              <div class="col-12">
-                <label class="text-caption text-bold">Cantidad:</label>
-                <q-input v-model="product.stock" outlined dense type="number" hint="" />
-              </div>
+<!--              <div class="col-12 col-md-6">-->
+<!--                <label class="text-caption text-bold">Costo:</label>-->
+<!--                <q-input v-model="product.costo" outlined dense type="number" step="0.01" />-->
+<!--              </div>-->
+<!--              <div class="col-12">-->
+<!--                <label class="text-caption text-bold">Cantidad:</label>-->
+<!--                <q-input v-model="product.stock" outlined dense type="number" hint="" />-->
+<!--              </div>-->
               <div class="col-12">
                 <label class="text-caption text-bold">Categoria:</label>
                 <q-select
