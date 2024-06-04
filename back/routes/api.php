@@ -47,6 +47,17 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
     Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'index']);
     Route::post('/sales', [\App\Http\Controllers\SaleController::class, 'store']);
+
+    Route::get('/insumos', [\App\Http\Controllers\InsumoController::class, 'index']);
+    Route::post('/insumos', [\App\Http\Controllers\InsumoController::class, 'store']);
+    Route::put('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'update']);
+    Route::delete('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'destroy']);
+
+//    category_insumos
+    Route::get('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'index']);
+//    Route::post('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'store']);
+//    Route::put('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'update']);
+//    Route::delete('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'destroy']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);
