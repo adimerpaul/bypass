@@ -24,24 +24,34 @@
                 <div class="text-subtitle1 text-bold text-black">
                   Carrito
                 </div>
+                <q-space />
+                <q-btn color="red" label="Limpiar Carrito" dense no-caps class="text-bold" size="10px" icon="o_delete" @click="$store.orders = []"/>
               </q-card-section>
               <q-card-section class="q-pa-xs">
                 <div class="row">
                   <div class="col-12">
-                    <q-list bordered>
-                      <q-item v-for="product in products" :key="product.id">
+                    <q-list bordered dense>
+                      <q-item v-for="product in $store.orders" :key="product.id">
                         <q-item-section>
-                          <q-item-label>{{product.name}}</q-item-label>
-                          <q-item-label>{{product.price}}</q-item-label>
+                          <q-item-label class="text-bold">{{product.name}}</q-item-label>
+                          <q-item-label class="flex flex-center">
+                            <q-input v-model="product.price" dense outlined type="number" style="width: 100px" step="0.01">
+                              <template v-slot:prepend>
+                                <q-icon name="fa-solid fa-dollar-sign" size="10px"/>
+                              </template>
+                            </q-input>
+                            <q-input v-model="product.cantidadSale" dense outlined type="number" style="width: 100px">
+                              <template v-slot:prepend>
+                                <q-icon name="fa-solid fa-shopping-cart" size="10px"/>
+                              </template>
+                            </q-input>
+                          </q-item-label>
                         </q-item-section>
-                        <q-item-section side>
-                          <q-btn flat icon="fa-solid fa-trash" @click="removeProduct(product)"/>
+                        <q-item-section class="text-right">
+                          <q-item-label class="text-red text-bold text-h5">{{ (product.price * product.cantidadSale).toFixed(2) }}</q-item-label>
                         </q-item-section>
                       </q-item>
                     </q-list>
-                  </div>
-                  <div class="col-12">
-                    <q-btn color="primary" label="Pagar" @click="pay"/>
                   </div>
                 </div>
               </q-card-section>
@@ -80,7 +90,17 @@ export default {
       }
     },
     productClick(product) {
-      this.$router.push({name: 'product', params: {id: product.id}});
+      const findProduct = this.$store.orders.find((order) => order.id === product.id);
+      if (findProduct) {
+        findProduct.cantidadSale += 1;
+      }else{
+        this.$store.orders.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          cantidadSale: 1
+        });
+      }
     },
     getCategories() {
       this.$axios.get('categories').then(response => {
