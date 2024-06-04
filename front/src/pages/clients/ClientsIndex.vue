@@ -32,21 +32,15 @@
         <q-form @submit="clientSave">
         <q-card-section>
           <div class="row">
-<!--            $fillable = ['name', 'lastname', 'company', 'nit', 'phone'];-->
+<!--            protected $fillable = ['cinit', 'name', 'email'];-->
             <div class="col-12">
-              <q-input v-model="client.name" label="Nombre" outlined dense :rules="[val => !!val || 'Campo requerido']" />
+              <q-input v-model="client.cinit" dense outlined type="text" label="C.I. o NIT" :rules="[val => !!val || 'Campo requerido']" />
             </div>
             <div class="col-12">
-              <q-input v-model="client.lastname" label="Apellido" outlined dense :rules="[val => !!val || 'Campo requerido']" />
+              <q-input v-model="client.name" dense outlined type="text" label="Nombre" :rules="[val => !!val || 'Campo requerido']" />
             </div>
             <div class="col-12">
-              <q-input v-model="client.company" label="Empresa" outlined dense :rules="[val => !!val || 'Campo requerido']" />
-            </div>
-            <div class="col-12">
-              <q-input v-model="client.nit" label="NIT" outlined dense :rules="[val => !!val || 'Campo requerido']" />
-            </div>
-            <div class="col-12">
-              <q-input v-model="client.phone" label="Teléfono" outlined dense :rules="[val => !!val || 'Campo requerido']" />
+              <q-input v-model="client.email" dense outlined type="text" label="Correo" />
             </div>
           </div>
         </q-card-section>
@@ -69,10 +63,8 @@ export default {
         { name: 'option', label: 'Opciones', align: 'left', field: row => row.option },
         { name: 'id', label: 'ID', align: 'left', field: row => row.id },
         { name: 'name', label: 'Nombre', align: 'left', field: row => row.name },
-        { name: 'lastname', label: 'Apellido', align: 'left', field: row => row.lastname },
-        { name: 'company', label: 'Empresa', align: 'left', field: row => row.company },
-        { name: 'nit', label: 'NIT', align: 'left', field: row => row.nit },
-        { name: 'phone', label: 'Teléfono', align: 'left', field: row => row.phone }
+        { name: 'cinit', label: 'C.I. o NIT', align: 'left', field: row => row.cinit },
+        { name: 'email', label: 'Correo', align: 'left', field: row => row.email }
       ],
       loading: false,
       clients: [],

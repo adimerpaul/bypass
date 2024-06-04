@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::delete('/products/{id}', [\App\Http\Controllers\ProductController::class, 'destroy']);
 
     Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);
+    Route::get('/searchClient/{search}', [\App\Http\Controllers\ClientController::class, 'searchClient']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);
