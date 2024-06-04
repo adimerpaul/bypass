@@ -117,7 +117,7 @@
       <q-card-section>
         <div class="row">
           <div class="col-12 col-md-4">
-            <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient"/>
+            <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>
           </div>
           <div class="col-12 col-md-4">
             <q-input v-model="client.name" label="Nombre" outlined dense/>
@@ -155,9 +155,16 @@ export default {
   },
   methods: {
     searchClient() {
-      this.$axios.get(`searchClient/${this.client.ci}`).then(response => {
-        this.client.name = response.data?.name;
-      });
+      console.log(this.client.ci);
+      if (this.client.ci === '' || this.client.ci === 0 || this.client.ci === null) {
+        this.client.name = 'SN';
+        return false;
+      }
+      if (this.client.ci != null) {
+        this.$axios.get(`searchClient/${this.client.ci}`).then(response => {
+          this.client.name = response.data?.name;
+        });
+      }
     },
     pay() {
       if (this.$store.orders.length === 0) {

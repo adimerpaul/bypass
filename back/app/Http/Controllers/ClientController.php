@@ -10,7 +10,7 @@ class ClientController extends Controller{
         return Client::orderBy('id', 'desc')->get();
     }
     public function searchClient($ci){
-        return Client::where('nit', 'like', '%'.$ci.'%')->firstOrFail();
+        return Client::where('cinit',$ci)->firstOrFail();
     }
 
     public function store(Request $request){
