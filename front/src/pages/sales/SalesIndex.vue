@@ -120,7 +120,7 @@
             <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>
           </div>
           <div class="col-12 col-md-4">
-            <q-input v-model="client.name" label="Nombre" outlined dense/>
+            <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
           </div>
           <div class="col-12 col-md-4 flex flex-center">
             <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="pay"/>
@@ -154,6 +154,9 @@ export default {
     this.getCategories();
   },
   methods: {
+    textUpperCase() {
+      this.client.name = this.client.name.toUpperCase();
+    },
     searchClient() {
       console.log(this.client.ci);
       if (this.client.ci === '' || this.client.ci === 0 || this.client.ci === null) {
