@@ -123,9 +123,11 @@
             <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
           </div>
           <div class="col-12 col-md-4 flex flex-center">
-            <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="pay"/>
+            <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>
           </div>
         </div>
+<!--        <pre>{{client}}</pre>-->
+<!--        <pre>{{$store.orders}}</pre>-->
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -146,7 +148,8 @@ export default {
         name: '',
       },
       recibido: '',
-      saleDialog: false
+      saleDialog: false,
+      loading: false,
     };
   },
   created() {
@@ -154,6 +157,21 @@ export default {
     this.getCategories();
   },
   methods: {
+    salePost() {
+      this.loading = true;
+      this.$axios.post('sales', {
+        client: this.client,
+        products: this.$store.orders
+      }).then(response => {
+        this.$store.orders = [];
+        this.saleDialog = false;
+        this.$alert.success('Venta realizada');
+      }).catch(error => {
+        this.$alert.error('Error al realizar la venta');
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
     textUpperCase() {
       this.client.name = this.client.name.toUpperCase();
     },
