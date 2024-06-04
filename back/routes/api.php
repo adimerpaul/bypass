@@ -44,6 +44,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
     Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index']);
     Route::get('/searchClient/{cinit}', [\App\Http\Controllers\ClientController::class, 'searchClient']);
+
+    Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'index']);
+    Route::post('/sales', [\App\Http\Controllers\SaleController::class, 'store']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);
