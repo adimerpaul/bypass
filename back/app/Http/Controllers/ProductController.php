@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Insumo;
+use App\Models\InsumoProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
@@ -10,7 +12,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Product::with(['category','insumos'])->orderBy('id', 'desc')->get();
+        return Product::with(['category','insumos'])->get();
     }
 
     public function store(Request $request)
@@ -30,7 +32,7 @@ class ProductController extends Controller
             'category_id' => $productRequest['category_id'],
 //            'user_id' => $request->user()->id,
         ]);
-        return response()->json($product, 201);
+        return Product::with(['category','insumos'])->find($product->id);
     }
 
     public function update(Request $request, $id){
@@ -44,9 +46,12 @@ class ProductController extends Controller
         }
         $product = Product::find($id);
         $product->update($productRequest);
-        return response()->json($product, 200);
+        return Product::with(['category','insumos'])->find($product->id);
     }
     public function destroy($id){
+        if (InsumoProduct::where('product_id', $id)->count() > 0){
+            return response()->json(['message' => 'No se puede eliminar el producto porque tiene insumos asociados'], 400);
+        }
         $product = Product::find($id);
         $product->delete();
         return response()->json($product, 200);

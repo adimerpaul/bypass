@@ -151,13 +151,13 @@
                   </thead>
                   <tbody v-if="product.insumos.length > 0">
                     <tr v-for="insumo in product.insumos" :key="insumo.id">
-                      <td style="line-height: 1">
+                      <td>
 <!--                        <pre>{{insumo}}</pre>-->
-                        <q-chip :label="insumo.unit" :color="insumo.unit==='UNIDAD'?'green':'orange'" text-color="white" dense size="10px" />
-                        <br>
                         {{insumo?.name}}
                       </td>
-                      <td class="text-right">
+                      <td class="text-right" style="line-height: 0.8">
+                        <q-chip :label="insumo.unit" :color="insumo.unit==='UNIDAD'?'green':'orange'" text-color="white" dense size="10px" />
+                        <br>
                         {{insumo?.pivot?.quantity}}
                       </td>
                       <td class="text-right">
@@ -285,6 +285,7 @@ export default {
       productDialog: false,
       loading: false,
       insumos: [],
+      insumosAll: [],
       insumosDialog: false,
       insumo: {}
     }
@@ -295,6 +296,13 @@ export default {
     this.insumosGet()
   },
   methods: {
+    filerInsumos (val) {
+      if (val === '') {
+        this.insumos = this.insumosAll
+      } else {
+        this.insumos = this.insumosAll.filter(insumo => insumo.name.toLowerCase().includes(val.toLowerCase()))
+      }
+    },
     insumoDelete(insumo){
       this.$alert.confirm('¿Estas seguro de eliminar este insumo?').onOk(() => {
         this.loading = true
@@ -331,6 +339,7 @@ export default {
     insumosGet(){
       this.$axios.get('insumos').then(response => {
         this.insumos = response.data
+        this.insumosAll = response.data
       })
     },
     downloadExcel () {
@@ -363,6 +372,8 @@ export default {
           this.products.splice(index, 1)
         }).finally(() => {
           this.loading = false
+        }).catch(error => {
+          this.$alert.error(error.response.data.message)
         })
       })
 
@@ -400,7 +411,8 @@ export default {
         }
       }).then(response => {
         this.productDialog = false
-        this.products.unshift(response.data)
+        // this.products.unshift(response.data)
+        this.products.push(response.data)
       }).finally(() => {
         this.loading = false
       })
