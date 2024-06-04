@@ -3,10 +3,10 @@
     <q-table :rows="insumos" :columns="columns" title="Insumos" :rows-per-page-options="[0]" row-key="id" dense :filter="filter" :loading="loading">
       <template v-slot:body-cell-option="props">
         <q-td auto-width>
-          <q-btn flat dense icon="edit" @click="insumoEdit(props.row)" >
+          <q-btn flat dense size="10px" icon="edit" @click="insumoEdit(props.row)" >
             <q-tooltip>Editar</q-tooltip>
           </q-btn>
-          <q-btn flat dense icon="delete" @click="insumoDelete(props.row.id)" >
+          <q-btn flat dense size="10px" icon="delete" @click="insumoDelete(props.row.id)" >
             <q-tooltip>Eliminar</q-tooltip>
           </q-btn>
         </q-td>
