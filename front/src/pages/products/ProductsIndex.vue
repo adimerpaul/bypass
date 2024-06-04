@@ -68,12 +68,12 @@
                   class="bg-grey-3"
                   text-color="grey-8"
                   rounded
-                  size="200px">
+                  size="140px">
                   <q-img
                     :src="product.image.includes('http')?product.image:`${$url}../images/${product.image}`"
                     spinner-color="grey-8"
                     spinner-size="40"
-                    style="height: 200px"
+                    style="height: 140px"
                   />
                   <q-badge
                     color="grey-8"
@@ -93,7 +93,7 @@
 <!--                <label class="text-caption text-bold">Descripcion:</label>-->
 <!--                <q-input v-model="product.description" outlined dense type="textarea" />-->
 <!--              </div>-->
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label class="text-caption text-bold">Precio:</label>
                 <q-input v-model="product.price" outlined dense type="number" step="0.01" :rules="[val => !!val || 'Campo requerido']" />
               </div>
@@ -105,7 +105,7 @@
 <!--                <label class="text-caption text-bold">Cantidad:</label>-->
 <!--                <q-input v-model="product.stock" outlined dense type="number" hint="" />-->
 <!--              </div>-->
-              <div class="col-12">
+              <div class="col-12 col-md-8">
                 <label class="text-caption text-bold">Categoria:</label>
                 <q-select
                   v-model="product.category_id"
@@ -119,13 +119,44 @@
                   :rules="[val => !!val || 'Campo requerido']"
                 />
               </div>
-              <div class="col-12">
+              <div class="col-12 col-md-6">
                 <label class="text-caption text-bold">Estado:</label>
                 <q-toggle v-model="product.status" :color="product.status ? 'green' : 'red'" true-value="ACTIVE" false-value="INACTIVE">
                   <div :class="`text-${product.status === 'ACTIVE' ? 'green' : 'red'} text-subtitle2 text-bold`">
                     {{product.status === 'ACTIVE' ? 'Activo' : 'Inactivo'}}
                   </div>
                 </q-toggle>
+              </div>
+              <div class="col-12" v-if="product.id !== undefined">
+                <label class="text-caption text-bold row items-center">
+                  Insumos:
+                  <q-space/>
+                  <q-btn
+                    color="green"
+                    label="Agregar"
+                    class="text-bold"
+                    no-caps
+                    icon="add_circle"
+                    rounded
+                    size="10px"
+                    @click="insumosClick"/>
+                </label>
+                <q-markup-table dense flat bordered>
+                  <thead class="bg-black text-white">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Opciones</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Arroz</td>
+                      <td>1</td>
+                      <td>0.50</td>
+                    </tr>
+                  </tbody>
+                </q-markup-table>
               </div>
             </div>
             <div>
@@ -187,13 +218,23 @@ export default {
       search: '',
       productDialog: false,
       loading: false,
+      insumos: []
     }
   },
   mounted() {
     this.productsGet()
     this.categoriesGet()
+    this.insumosGet()
   },
   methods: {
+    insumosClick(){
+      console.log('insumosClick')
+    },
+    insumosGet(){
+      this.$axios.get('insumos').then(response => {
+        this.insumos = response.data
+      })
+    },
     downloadExcel () {
       let data = [{
         columns: [

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger('category_insumo_id');
             $table->foreign('category_insumo_id')->references('id')->on('category_insumos');
-            $table->integer('stock');
+            $table->decimal('stock', 8, 2);
             $table->string('unit');
             $table->string('status')->default('ACTIVE');
             $table->timestamps();

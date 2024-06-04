@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('insumo_id')->references('id')->on('insumos');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->integer('quantity');
+            $table->decimal('quantity', 8, 2);
             $table->string('status')->default('ACTIVE');
             $table->unique(['insumo_id', 'product_id']);
             $table->timestamps();

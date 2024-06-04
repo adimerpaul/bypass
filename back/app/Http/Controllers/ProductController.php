@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Product::with('category')->orderBy('id', 'desc')->get();
+        return Product::with(['category','insumos'])->orderBy('id', 'desc')->get();
     }
 
     public function store(Request $request)

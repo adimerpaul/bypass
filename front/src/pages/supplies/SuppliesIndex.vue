@@ -32,6 +32,12 @@
           <q-chip color="negative" dense text-color="white" label="Inactivo" v-else/>
         </q-td>
       </template>
+      <template v-slot:body-cell-unit="props">
+        <q-td :props="props" class="text-bold">
+          <q-chip color="indigo" dense text-color="white" label="UNIDAD" v-if="props.row.unit === 'UNIDAD'"/>
+          <q-chip color="purple" dense text-color="white" label="GRAMOS" v-else/>
+        </q-td>
+      </template>
     </q-table>
     <q-dialog v-model="insumoDialog" persistent>
       <q-card style="width: 250px;max-width: 90vw;">
@@ -52,7 +58,7 @@
                           map-options emit-value option-value="id" option-label="name"/>
               </div>
               <div class="col-12">
-                <q-input v-model="insumo.stock" dense outlined type="number" label="Stock"  />
+                <q-input v-model="insumo.stock" dense outlined type="number" label="Stock"  hint=""/>
               </div>
               <div class="col-12">
                 <q-select v-model="insumo.unit" dense outlined type="text" label="Unidad" :rules="[val => !!val || 'Campo requerido']" :options="['UNIDAD', 'GRAMOS']"/>
