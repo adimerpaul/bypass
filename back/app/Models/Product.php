@@ -17,8 +17,8 @@ class Product extends Model
     }
     public function insumos(){
         return $this->belongsToMany(Insumo::class, 'insumo_products')
-            ->withPivot('quantity', 'status')
-            ->select('insumos.id', 'insumos.name', 'insumo_products.quantity');
+            ->withPivot('quantity','id');
+//            ->select('insumos.id', 'insumos.name', 'insumo_products.quantity');
     }
     protected $hidden = ['created_at', 'updated_at'];
 }

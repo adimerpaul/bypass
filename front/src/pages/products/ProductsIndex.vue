@@ -149,11 +149,30 @@
                     <th>Opciones</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody v-if="product.insumos.length > 0">
+                    <tr v-for="insumo in product.insumos" :key="insumo.id">
+                      <td style="line-height: 1">
+<!--                        <pre>{{insumo}}</pre>-->
+                        <q-chip :label="insumo.unit" :color="insumo.unit==='UNIDAD'?'green':'orange'" text-color="white" dense size="10px" />
+                        <br>
+                        {{insumo?.name}}
+                      </td>
+                      <td class="text-right">
+                        {{insumo?.pivot?.quantity}}
+                      </td>
+                      <td class="text-right">
+                        <q-btn
+                          color="red"
+                          flat
+                          icon="delete"
+                          @click="insumoDelete(insumo)"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else>
                     <tr>
-                      <td>Arroz</td>
-                      <td>1</td>
-                      <td>0.50</td>
+                      <td colspan="3" class="text-center">No hay insumos</td>
                     </tr>
                   </tbody>
                 </q-markup-table>
@@ -198,6 +217,53 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="insumosDialog">
+      <q-card style="width: 350px; max-width: 80vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-bold text-h6">
+            Agregar Insumos
+          </div>
+          <q-space />
+          <q-btn flat icon="close" @click="insumosDialog = false" />
+        </q-card-section>
+        <q-card-section>
+          <q-form @submit="insumoSave">
+            <div class="row">
+              <div class="col-12">
+                <label class="text-caption text-bold">Insumo:</label>
+                <q-select
+                  v-model="insumo.insumo_id"
+                  :options="insumos"
+                  outlined
+                  dense
+                  emit-value
+                  map-options
+                  option-value="id"
+                  option-label="name"
+                  :rules="[val => !!val || 'Campo requerido']"
+                />
+              </div>
+              <div class="col-12">
+                <label class="text-caption text-bold">Cantidad:</label>
+                <q-input v-model="insumo.quantity" outlined dense type="number" step="0.01" :rules="[val => !!val || 'Campo requerido']" />
+              </div>
+            </div>
+            <div>
+              <q-btn
+                color="green"
+                label="Guardar"
+                class="text-bold full-width"
+                type="submit"
+                no-caps
+                icon="save"
+                rounded
+                :loading="loading"
+              ></q-btn>
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 <script>
@@ -218,7 +284,9 @@ export default {
       search: '',
       productDialog: false,
       loading: false,
-      insumos: []
+      insumos: [],
+      insumosDialog: false,
+      insumo: {}
     }
   },
   mounted() {
@@ -227,8 +295,38 @@ export default {
     this.insumosGet()
   },
   methods: {
+    insumoDelete(insumo){
+      this.$alert.confirm('¿Estas seguro de eliminar este insumo?').onOk(() => {
+        this.loading = true
+        this.$axios.delete(`insumosProduct/${insumo.pivot?.id}`).then(response => {
+          this.product = {...response.data}
+          const index = this.products.findIndex(product => product.id === response.data.id)
+          this.products.splice(index, 1, response.data)
+        }).finally(() => {
+          this.loading = false
+        })
+      })
+    },
+    insumoSave(){
+      this.loading = true
+      this.$axios.post('insumosProduct', this.insumo).then(response => {
+        this.insumosDialog = false
+        this.product= {...response.data}
+        const index = this.products.findIndex(product => product.id === response.data.id)
+        this.products.splice(index, 1, response.data)
+      }).finally(() => {
+        this.loading = false
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      })
+    },
     insumosClick(){
-      console.log('insumosClick')
+      this.insumosDialog = true
+      this.insumo = {
+        product_id: this.product.id,
+        insumo_id: '',
+        quantity: '',
+      }
     },
     insumosGet(){
       this.$axios.get('insumos').then(response => {

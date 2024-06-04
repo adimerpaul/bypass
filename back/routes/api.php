@@ -58,6 +58,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 //    Route::post('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'store']);
 //    Route::put('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'update']);
 //    Route::delete('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'destroy']);
+
+    Route::post('/insumosProduct', [\App\Http\Controllers\InsumoProductController::class, 'store']);
+    Route::delete('/insumosProduct/{insumoProduct}', [\App\Http\Controllers\InsumoProductController::class, 'destroy']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);
