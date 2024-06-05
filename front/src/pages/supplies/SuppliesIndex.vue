@@ -38,6 +38,11 @@
           <q-chip color="purple" dense text-color="white" label="GRAMOS" v-else/>
         </q-td>
       </template>
+      <template v-slot:body-cell-stock="props">
+        <q-td :props="props" class="text-bold" :class="`text-${props.row.stock < 300 ? 'negative' : 'positive'}`">
+          {{ props.row.stock }}
+        </q-td>
+      </template>
     </q-table>
     <q-dialog v-model="insumoDialog" persistent>
       <q-card style="width: 250px;max-width: 90vw;">
