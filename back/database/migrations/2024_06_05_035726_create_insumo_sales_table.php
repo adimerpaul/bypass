@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('diarios', function (Blueprint $table) {
+        Schema::create('insumo_sales', function (Blueprint $table) {
             $table->id();
-            $table->string('item');
-            $table->string('medida');
             $table->unsignedBigInteger('insumo_id');
             $table->foreign('insumo_id')->references('id')->on('insumos');
-            $table->decimal('inicio',8,3);
-            $table->decimal('ingreso',8,3);
-            $table->decimal('egreso',8,3);
-            $table->decimal('ventas',8,3);
-            $table->decimal('cierre',8,3);
-            $table->decimal('local',8,3);
+            $table->unsignedBigInteger('sale_id');
+            $table->foreign('sale_id')->references('id')->on('sales');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->decimal('quantity', 8, 2);
             $table->string('status')->default('ACTIVE');
             $table->date('date');
             $table->timestamps();
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('diarios');
+        Schema::dropIfExists('insumo_sales');
     }
 };
