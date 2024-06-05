@@ -157,13 +157,12 @@ export default {
       if (route === '/') return 'Inicio'
       if (route === '/users') return 'Usuarios'
       else if (route === '/clients') return 'Clientes'
-      else if (route === '/companies') return 'Empresas'
-      else if (route === '/boats') return 'Botes'
-      else if (route === '/crews') return 'Tripulantes'
       else if (route === '/products') return 'Productos'
-      else if (route === '/loans') return 'Prestamos'
-      else if (route === '/payments') return 'Pagos'
-      else if (route === '/finished-loans') return 'Prestamos Finalizados'
+      else if (route === '/sales') return 'Ventas'
+      else if (route === '/supplies') return 'Insumos'
+      else if (route === '/purchases') return 'Compras'
+      else if (route === '/diaries') return 'Diarios'
+      else
       return 'Inicio'
     },
   },
