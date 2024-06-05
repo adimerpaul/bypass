@@ -7,31 +7,66 @@
             <div class="row">
               <div class="col-12 col-md-4">
                 <q-input v-model="search" label="Buscar" outlined dense clearable
-                         @update:modelValue="productFilter" :loading="loading"/>
+                          :loading="loading"/>
               </div>
               <div class="col-12 col-md-2">
               </div>
               <div class="col-12 col-md-6 text-right">
               </div>
               <div class="col-12">
-                <ProductCard :products="products" :categories="categoryMoreAll" @productClick="productClick" @categoryClick="categoryClick"/>
+                <q-table :rows="insumos" :loading="loading" :columns="columns" :filter="search" dense :rows-per-page-options="[0]">
+                  <template v-slot:header="props">
+                    <q-tr :props="props" class="bg-black text-white">
+                      <q-th key="name" :props="props">
+                        Nombre
+                      </q-th>
+                      <q-th key="unit" :props="props">
+                        Unidad
+                      </q-th>
+                      <q-th key="status" :props="props">
+                        Estado
+                      </q-th>
+                      <q-th key="stock" :props="props">
+                        Stock
+                      </q-th>
+                    </q-tr>
+                  </template>
+                  <template v-slot:body="props">
+                    <q-tr :props="props" @click="productClick(props.row)">
+                      <q-td key="name" :props="props">
+                        {{props.row.name}}
+                      </q-td>
+                      <q-td key="unit" :props="props">
+                        <q-chip color="indigo" dense text-color="white" size="10px" label="UNIDAD" v-if="props.row.unit === 'UNIDAD'"/>
+                        <q-chip color="purple" dense text-color="white" size="10px" label="GRAMOS" v-else/>
+                      </q-td>
+                      <q-td key="status" :props="props">
+                        <q-chip :label="props.row.status === 'ACTIVE'? 'Activo' : 'Inactivo'" :color="props.row.status === 'ACTIVE'? 'green' : 'red'" dense size="10px" text-color="white"/>
+                      </q-td>
+                      <q-td key="stock" :props="props">
+                        {{props.row.stock}}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+<!--                <pre>{{insumos}}</pre>-->
               </div>
             </div>
           </div>
           <div class="col-12 col-md-4">
             <q-card>
-              <q-card-section class="q-pa-xs row items-center bg-yellow">
-                <div class="text-subtitle1 text-bold text-black">
-                  Carrito
+              <q-card-section class="q-pa-xs row items-center bg-orange">
+                <div class="text-subtitle1 text-bold text-white">
+                  Compras
                 </div>
                 <q-space />
-                <q-btn color="red" label="Limpiar Carrito" dense no-caps class="text-bold" size="10px" icon="o_delete" @click="$store.orders = []" :loading="loading"/>
+                <q-btn color="red" label="Limpiar" dense no-caps class="text-bold" size="10px" icon="o_delete" @click="$store.buys = []" :loading="loading"/>
               </q-card-section>
               <q-card-section class="q-pa-xs">
                 <div class="row">
                   <div class="col-12">
                     <q-list bordered dense>
-                      <q-item v-for="product in $store.orders" :key="product.id">
+                      <q-item v-for="product in $store.buys" :key="product.id">
                         <q-item-section>
                           <q-item-label class="text-bold">
                             {{product.name}}
@@ -58,7 +93,7 @@
                         <q-item-section class="text-right" side>
                           <q-item-label class="text-red text-bold text-h6">
                             {{ (product.price * product.cantidadSale).toFixed(2) }}
-                            <q-btn dense flat rounded icon="delete" size="10px" color="red" @click="$store.orders.splice($store.orders.indexOf(product), 1)"/>
+                            <q-btn dense flat rounded icon="delete" size="10px" color="red" @click="$store.buys.splice($store.buys.indexOf(product), 1)"/>
                           </q-item-label>
                         </q-item-section>
                       </q-item>
@@ -71,13 +106,13 @@
                       </div>
                       <q-space />
                       <div class="text-bold text-h5 text-red">
-                        {{ $store.orders.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs
+                        {{ $store.buys.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs
                       </div>
                     </q-card-section>
                   </div>
                   <div class="col-12">
                     <q-card-section class="q-pa-xs">
-                      <q-btn color="indigo" label="Pagar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
+                      <q-btn color="orange" label="Comprar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
                     </q-card-section>
                   </div>
                 </div>
@@ -88,61 +123,59 @@
       </q-card-section>
     </q-card>
   </q-page>
-  <q-dialog v-model="saleDialog" persistent>
-    <q-card style="width: 700px;max-width: 90vh">
-      <q-card-section class="q-pa-xs row items-center">
-        <div class="text-h6 text-bold">
-          Pago
-        </div>
-        <q-space />
-        <q-btn flat dense icon="close" @click="saleDialog = false"/>
-      </q-card-section>
-      <q-card-section class="">
-        <div class="text-bold text-center ">
-          <div class="row">
-            <div class="col-12 col-md-4 text-red text-subtitle1 text-bold">
-              Total :{{ $store.orders.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs
-            </div>
-            <div class="col-12 col-md-4">
-              <q-input v-model="recibido" label="Recibido" outlined dense clearable/>
-            </div>
-            <div class="col-12 col-md-4 text-blue text-subtitle1 text-bold">
-              <div v-if="recibido !== ''">
-              Cambio :{{ (recibido - $store.orders.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0)).toFixed(2) }} Bs
-              </div>
-            </div>
-          </div>
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="row">
-          <div class="col-12 col-md-4">
-            <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>
-          </div>
-          <div class="col-12 col-md-4">
-            <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
-          </div>
-          <div class="col-12 col-md-4 flex flex-center">
-            <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>
-          </div>
-        </div>
-<!--        <pre>{{client}}</pre>-->
-<!--        <pre>{{$store.orders}}</pre>-->
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+<!--  <q-dialog v-model="saleDialog" persistent>-->
+<!--    <q-card style="width: 700px;max-width: 90vh">-->
+<!--      <q-card-section class="q-pa-xs row items-center">-->
+<!--        <div class="text-h6 text-bold">-->
+<!--          Pago-->
+<!--        </div>-->
+<!--        <q-space />-->
+<!--        <q-btn flat dense icon="close" @click="saleDialog = false"/>-->
+<!--      </q-card-section>-->
+<!--      <q-card-section class="">-->
+<!--        <div class="text-bold text-center ">-->
+<!--          <div class="row">-->
+<!--            <div class="col-12 col-md-4 text-red text-subtitle1 text-bold">-->
+<!--              Total :{{ $store.buys.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs-->
+<!--            </div>-->
+<!--            <div class="col-12 col-md-4">-->
+<!--              <q-input v-model="recibido" label="Recibido" outlined dense clearable/>-->
+<!--            </div>-->
+<!--            <div class="col-12 col-md-4 text-blue text-subtitle1 text-bold">-->
+<!--              <div v-if="recibido !== ''">-->
+<!--              Cambio :{{ (recibido - $store.buys.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0)).toFixed(2) }} Bs-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </q-card-section>-->
+<!--      <q-card-section>-->
+<!--        <div class="row">-->
+<!--          <div class="col-12 col-md-4">-->
+<!--            <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>-->
+<!--          </div>-->
+<!--          <div class="col-12 col-md-4">-->
+<!--            <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>-->
+<!--          </div>-->
+<!--          <div class="col-12 col-md-4 flex flex-center">-->
+<!--            <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--&lt;!&ndash;        <pre>{{client}}</pre>&ndash;&gt;-->
+<!--&lt;!&ndash;        <pre>{{$store.buys}}</pre>&ndash;&gt;-->
+<!--      </q-card-section>-->
+<!--    </q-card>-->
+<!--  </q-dialog>-->
 </template>
 <script>
-import ProductCard from "pages/products/ProductCard.vue";
 
 export default {
-  components: {ProductCard},
   data() {
     return {
       search: '',
-      products: [],
+      insumos: [],
       categories: [],
-      productsAll: [],
+      insumosAll: [],
       client: {
         ci: '',
         name: '',
@@ -150,73 +183,93 @@ export default {
       recibido: '',
       saleDialog: false,
       loading: false,
+      columns: [
+        {name: 'name', label: 'Nombre', align: 'left', field: 'name'},
+        {name: 'unit', label: 'Unidad', align: 'left', field: 'unit'},
+        {name: 'status', label: 'Estado', align: 'left', field: 'status'},
+        {name: 'stock', label: 'Stock', align: 'right', field: 'stock'},
+        // {name: 'category', label: 'Categoria', align: 'left', field: 'category.name'},
+      ],
     };
   },
   created() {
-    this.getProducts();
-    this.getCategories();
+    this.insumosGet();
   },
   methods: {
-    salePost() {
-      this.loading = true;
-      this.$axios.post('sales', {
-        client: this.client,
-        products: this.$store.orders
-      }).then(response => {
-        this.$store.orders = [];
-        this.saleDialog = false;
-        this.$alert.success('Venta realizada');
-      }).catch(error => {
-        this.$alert.error('Error al realizar la venta');
-      }).finally(() => {
-        this.loading = false;
-      });
-    },
+    // salePost() {
+    //   this.loading = true;
+    //   this.$axios.post('sales', {
+    //     client: this.client,
+    //     insumos: this.$store.buys
+    //   }).then(response => {
+    //     this.$store.buys = [];
+    //     this.saleDialog = false;
+    //     this.$alert.success('Venta realizada');
+    //   }).catch(error => {
+    //     this.$alert.error('Error al realizar la venta');
+    //   }).finally(() => {
+    //     this.loading = false;
+    //   });
+    // },
     textUpperCase() {
       this.client.name = this.client.name.toUpperCase();
     },
-    searchClient() {
-      console.log(this.client.ci);
-      if (this.client.ci === '' || this.client.ci === 0 || this.client.ci === null) {
-        this.client.name = 'SN';
-        return false;
-      }
-      if (this.client.ci != null) {
-        this.$axios.get(`searchClient/${this.client.ci}`).then(response => {
-          this.client.name = response.data?.name;
-        });
-      }
-    },
+    // searchClient() {
+    //   console.log(this.client.ci);
+    //   if (this.client.ci === '' || this.client.ci === 0 || this.client.ci === null) {
+    //     this.client.name = 'SN';
+    //     return false;
+    //   }
+    //   if (this.client.ci != null) {
+    //     this.$axios.get(`searchClient/${this.client.ci}`).then(response => {
+    //       this.client.name = response.data?.name;
+    //     });
+    //   }
+    // },
     pay() {
-      if (this.$store.orders.length === 0) {
+      if (this.$store.buys.length === 0) {
         this.$alert.error('Debe agregar productos al carrito');
         return false;
       }
-      this.recibido = '';
-      this.saleDialog = true;
-      this.client = {
-        ci: 0,
-        name: 'SN',
-      };
+      this.$alert.confirm('¿Desea realizar la compra?').onOk(() => {
+        this.loading = true;
+        this.$axios.post('purchases', {
+          insumos: this.$store.buys
+        }).then(response => {
+          this.$store.buys = [];
+          this.$alert.success('Compra realizada');
+          this.insumosGet();
+        }).catch(error => {
+          this.$alert.error('Error al realizar la compra');
+        }).finally(() => {
+          this.loading = false;
+        });
+      });
+      // this.recibido = '';
+      // this.saleDialog = true;
+      // this.client = {
+      //   ci: 0,
+      //   name: 'SN',
+      // };
     },
     categoryClick(category) {
       if (category.id === '') {
-        this.products = this.productsAll;
+        this.insumos = this.insumosAll;
       } else {
-        this.products = this.productsAll.filter((product) => {
+        this.insumos = this.insumosAll.filter((product) => {
           return product.category_id === category.id;
         });
       }
     },
     productClick(product) {
-      const findProduct = this.$store.orders.find((order) => order.id === product.id);
+      const findProduct = this.$store.buys.find((order) => order.id === product.id);
       if (findProduct) {
         findProduct.cantidadSale += 1;
       }else{
-        this.$store.orders.push({
+        this.$store.buys.push({
           id: product.id,
           name: product.name,
-          price: product.price,
+          price: 0,
           cantidadSale: 1
         });
       }
@@ -226,20 +279,20 @@ export default {
         this.categories = response.data;
       });
     },
-    getProducts() {
+    insumosGet() {
       this.loading = true;
-      this.$axios.get('products').then(response => {
-        this.products = response.data;
-        this.productsAll = response.data;
+      this.$axios.get('insumos').then(response => {
+        this.insumos = response.data;
+        this.insumosAll = response.data;
       }).finally(() => {
         this.loading = false;
       });
     },
     productFilter(data) {
       if (data === '') {
-        this.products = this.productsAll;
+        this.insumos = this.insumosAll;
       } else {
-        this.products = this.productsAll.filter((product) => {
+        this.insumos = this.insumosAll.filter((product) => {
           return product.name.toLowerCase().includes(data.toLowerCase());
         });
       }

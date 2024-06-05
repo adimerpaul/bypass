@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Buy extends Model
 {
     use HasFactory;
-protected $fillable = ['insumo_id', 'user_id', 'quantity', 'price', 'total', 'status', 'date'];
-protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['insumo_id', 'user_id', 'quantity', 'price', 'total', 'status', 'date'];
+    protected $hidden = ['created_at', 'updated_at'];
 }
