@@ -7,6 +7,11 @@ use App\Models\Insumo;
 use Illuminate\Http\Request;
 
 class InsumoController extends Controller{
+    function insumosStock(Request $request, Insumo $insumo){
+        $insumo->stock = $request->stock;
+        $insumo->save();
+//        return Insumo::where('id', $insumo->id)->with('categoryInsumo')->first();
+    }
     function purchases(Request $request){
         $insumos= $request->insumos;
         foreach ($insumos as $insumo){

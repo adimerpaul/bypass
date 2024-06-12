@@ -3,17 +3,33 @@
     <q-table :rows="insumos" :columns="columns" title="Insumos" :rows-per-page-options="[0]" row-key="id" dense :filter="filter" :loading="loading">
       <template v-slot:body-cell-option="props">
         <q-td auto-width>
-          <q-btn flat dense size="10px" icon="edit" @click="insumoEdit(props.row)" >
-            <q-tooltip>Editar</q-tooltip>
-          </q-btn>
-          <q-btn flat dense size="10px" icon="delete" @click="insumoDelete(props.row.id)" >
-            <q-tooltip>Eliminar</q-tooltip>
-          </q-btn>
+<!--          <q-btn flat dense size="10px" icon="edit" @click="insumoEdit(props.row)" >-->
+<!--            <q-tooltip>Editar</q-tooltip>-->
+<!--          </q-btn>-->
+<!--          <q-btn flat dense size="10px" icon="delete" @click="insumoDelete(props.row.id)" >-->
+<!--            <q-tooltip>Eliminar</q-tooltip>-->
+<!--          </q-btn>-->
+          <q-btn-dropdown label="Opciones" dense no-caps color="primary" size="10px">
+            <q-list>
+              <q-item clickable v-ripple @click="insumoEdit(props.row)">
+                <q-item-section>Editar</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple @click="insumoDelete(props.row.id)">
+                <q-item-section>Eliminar</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple @click="insumoHistory(props.row)">
+                <q-item-section>Historial</q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-td>
       </template>
       <template v-slot:top-right>
         <q-btn outline dense icon="add_circle" @click="insumoAdd" label="Agregar" no-caps :loading="loading">
           <q-tooltip>Agregar</q-tooltip>
+        </q-btn>
+        <q-btn outline dense icon="refresh" @click="getInsumos" label="Actualizar" no-caps :loading="loading" class="q-ml-md">
+          <q-tooltip>Actualizar</q-tooltip>
         </q-btn>
         <q-input v-model="filter" dense class="q-ml-md" debounce="300" placeholder="Buscar" outlined >
           <template v-slot:append>
@@ -40,6 +56,7 @@
       </template>
       <template v-slot:body-cell-stock="props">
         <q-td :props="props" class="text-bold" :class="`text-${props.row.stock < 300 ? 'negative' : 'positive'}`">
+          <input v-model="props.row.stock"  type="number" class="q-pa-xs" style="width: 100px;" @change="insumoStockUpdate(props.row)">
           {{ props.row.stock }}
         </q-td>
       </template>
@@ -118,6 +135,14 @@ export default {
     })
   },
   methods: {
+    insumoStockUpdate (insumo) {
+      this.$axios.put(`insumosStock/${insumo.id}`, insumo).then(response => {
+        const index = this.insumos.findIndex(insumo => insumo.id === response.data.id)
+        this.insumos.splice(index, 1, response.data)
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      })
+    },
     insumoSave () {
       this.loading = true
       if (this.insumo.id) {

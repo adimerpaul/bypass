@@ -52,12 +52,10 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/insumos', [\App\Http\Controllers\InsumoController::class, 'store']);
     Route::put('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'update']);
     Route::delete('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'destroy']);
+    Route::put('/insumosStock/{insumo}', [\App\Http\Controllers\InsumoController::class, 'insumosStock']);
 
 //    category_insumos
     Route::get('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'index']);
-//    Route::post('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'store']);
-//    Route::put('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'update']);
-//    Route::delete('/category_insumos/{categoryInsumo}', [\App\Http\Controllers\CategoryInsumoController::class, 'destroy']);
 
     Route::post('/insumosProduct', [\App\Http\Controllers\InsumoProductController::class, 'store']);
     Route::delete('/insumosProduct/{insumoProduct}', [\App\Http\Controllers\InsumoProductController::class, 'destroy']);
