@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::delete('/insumosProduct/{insumoProduct}', [\App\Http\Controllers\InsumoProductController::class, 'destroy']);
 
     Route::post('/purchases', [\App\Http\Controllers\InsumoController::class, 'purchases']);
+    Route::post('/deregistrations', [\App\Http\Controllers\DeregistrationController::class, 'store']);
 
     Route::get('/diarioDate/{date}', [\App\Http\Controllers\DiarioController::class, 'diarioDate']);
 });

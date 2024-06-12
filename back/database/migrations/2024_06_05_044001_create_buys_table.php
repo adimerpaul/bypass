@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('price', 8, 2);
             $table->decimal('total', 8, 2);
             $table->string('status')->default('ACTIVE');
+            $table->string('description')->nullable();
             $table->date('date');
             $table->timestamps();
         });

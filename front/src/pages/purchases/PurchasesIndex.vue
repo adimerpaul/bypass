@@ -114,7 +114,7 @@
                       <q-btn color="green" label="Comprar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
                   </div>
                   <div class="col-12 q-pa-xs">
-                    <q-btn color="red" label="Egreso" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
+                    <q-btn color="red" label="Egreso" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="deregistration" :loading="loading"/>
                   </div>
                 </div>
               </q-card-section>
@@ -154,6 +154,26 @@ export default {
     this.insumosGet();
   },
   methods: {
+    deregistration() {
+      if (this.$store.buys.length === 0) {
+        this.$alert.error('Debe agregar productos al carrito');
+        return false;
+      }
+      this.$alert.confirm('¿Desea realizar el egreso?').onOk(() => {
+        this.loading = true;
+        this.$axios.post('deregistrations', {
+          insumos: this.$store.buys
+        }).then(response => {
+          this.$store.buys = [];
+          this.$alert.success('Egreso realizado');
+          this.insumosGet();
+        }).catch(error => {
+          this.$alert.error('Error al realizar el egreso');
+        }).finally(() => {
+          this.loading = false;
+        });
+      });
+    },
     pay() {
       if (this.$store.buys.length === 0) {
         this.$alert.error('Debe agregar productos al carrito');
