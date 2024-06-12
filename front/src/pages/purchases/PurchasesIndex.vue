@@ -110,10 +110,11 @@
                       </div>
                     </q-card-section>
                   </div>
-                  <div class="col-12">
-                    <q-card-section class="q-pa-xs">
-                      <q-btn color="orange" label="Comprar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
-                    </q-card-section>
+                  <div class="col-12 q-pa-xs">
+                      <q-btn color="green" label="Comprar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
+                  </div>
+                  <div class="col-12 q-pa-xs">
+                    <q-btn color="red" label="Egreso" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
                   </div>
                 </div>
               </q-card-section>
@@ -123,49 +124,6 @@
       </q-card-section>
     </q-card>
   </q-page>
-<!--  <q-dialog v-model="saleDialog" persistent>-->
-<!--    <q-card style="width: 700px;max-width: 90vh">-->
-<!--      <q-card-section class="q-pa-xs row items-center">-->
-<!--        <div class="text-h6 text-bold">-->
-<!--          Pago-->
-<!--        </div>-->
-<!--        <q-space />-->
-<!--        <q-btn flat dense icon="close" @click="saleDialog = false"/>-->
-<!--      </q-card-section>-->
-<!--      <q-card-section class="">-->
-<!--        <div class="text-bold text-center ">-->
-<!--          <div class="row">-->
-<!--            <div class="col-12 col-md-4 text-red text-subtitle1 text-bold">-->
-<!--              Total :{{ $store.buys.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs-->
-<!--            </div>-->
-<!--            <div class="col-12 col-md-4">-->
-<!--              <q-input v-model="recibido" label="Recibido" outlined dense clearable/>-->
-<!--            </div>-->
-<!--            <div class="col-12 col-md-4 text-blue text-subtitle1 text-bold">-->
-<!--              <div v-if="recibido !== ''">-->
-<!--              Cambio :{{ (recibido - $store.buys.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0)).toFixed(2) }} Bs-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </q-card-section>-->
-<!--      <q-card-section>-->
-<!--        <div class="row">-->
-<!--          <div class="col-12 col-md-4">-->
-<!--            <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>-->
-<!--          </div>-->
-<!--          <div class="col-12 col-md-4">-->
-<!--            <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>-->
-<!--          </div>-->
-<!--          <div class="col-12 col-md-4 flex flex-center">-->
-<!--            <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--&lt;!&ndash;        <pre>{{client}}</pre>&ndash;&gt;-->
-<!--&lt;!&ndash;        <pre>{{$store.buys}}</pre>&ndash;&gt;-->
-<!--      </q-card-section>-->
-<!--    </q-card>-->
-<!--  </q-dialog>-->
 </template>
 <script>
 
@@ -196,36 +154,6 @@ export default {
     this.insumosGet();
   },
   methods: {
-    // salePost() {
-    //   this.loading = true;
-    //   this.$axios.post('sales', {
-    //     client: this.client,
-    //     insumos: this.$store.buys
-    //   }).then(response => {
-    //     this.$store.buys = [];
-    //     this.saleDialog = false;
-    //     this.$alert.success('Venta realizada');
-    //   }).catch(error => {
-    //     this.$alert.error('Error al realizar la venta');
-    //   }).finally(() => {
-    //     this.loading = false;
-    //   });
-    // },
-    textUpperCase() {
-      this.client.name = this.client.name.toUpperCase();
-    },
-    // searchClient() {
-    //   console.log(this.client.ci);
-    //   if (this.client.ci === '' || this.client.ci === 0 || this.client.ci === null) {
-    //     this.client.name = 'SN';
-    //     return false;
-    //   }
-    //   if (this.client.ci != null) {
-    //     this.$axios.get(`searchClient/${this.client.ci}`).then(response => {
-    //       this.client.name = response.data?.name;
-    //     });
-    //   }
-    // },
     pay() {
       if (this.$store.buys.length === 0) {
         this.$alert.error('Debe agregar productos al carrito');
@@ -245,12 +173,6 @@ export default {
           this.loading = false;
         });
       });
-      // this.recibido = '';
-      // this.saleDialog = true;
-      // this.client = {
-      //   ci: 0,
-      //   name: 'SN',
-      // };
     },
     categoryClick(category) {
       if (category.id === '') {
@@ -274,11 +196,6 @@ export default {
         });
       }
     },
-    getCategories() {
-      this.$axios.get('categories').then(response => {
-        this.categories = response.data;
-      });
-    },
     insumosGet() {
       this.loading = true;
       this.$axios.get('insumos').then(response => {
@@ -287,24 +204,7 @@ export default {
       }).finally(() => {
         this.loading = false;
       });
-    },
-    productFilter(data) {
-      if (data === '') {
-        this.insumos = this.insumosAll;
-      } else {
-        this.insumos = this.insumosAll.filter((product) => {
-          return product.name.toLowerCase().includes(data.toLowerCase());
-        });
-      }
-    },
+    }
   },
-  computed: {
-    categoryMoreAll () {
-      return [
-        {id: '', name: 'Todo', icon: 'fa-solid fa-globe'},
-        ...this.categories
-      ]
-    },
-  }
 };
 </script>

@@ -106,7 +106,7 @@ export default {
     }
   },
   mounted() {
-    this.diarioGet();
+    // this.diarioGet();
   },
   methods: {
     diarioGet() {

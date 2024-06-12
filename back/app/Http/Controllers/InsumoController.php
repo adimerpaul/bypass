@@ -10,7 +10,7 @@ class InsumoController extends Controller{
     function purchases(Request $request){
         $insumos= $request->insumos;
         foreach ($insumos as $insumo){
-            error_log($insumo['cantidadSale']);
+//            error_log($insumo['cantidadSale']);
             $insumoUpdate = Insumo::find($insumo['id']);
             $insumoUpdate->stock = $insumoUpdate->stock + $insumo['cantidadSale'];
             $insumoUpdate->save();
