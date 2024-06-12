@@ -19,12 +19,12 @@ return new class extends Migration
             $table->foreign('insumo_id')->references('id')->on('insumos');
             $table->unsignedBigInteger('category_insumo_id');
             $table->foreign('category_insumo_id')->references('id')->on('category_insumos');
-            $table->decimal('inicio',8,3);
-            $table->decimal('ingreso',8,3);
-            $table->decimal('egreso',8,3);
-            $table->decimal('ventas',8,3);
-            $table->decimal('cierre',8,3);
-            $table->decimal('local',8,3);
+            $table->decimal('inicio',8,2);
+            $table->decimal('ingreso',8,2);
+            $table->decimal('egreso',8,2);
+            $table->decimal('ventas',8,2);
+            $table->decimal('cierre',8,2);
+            $table->decimal('local',8,2);
             $table->string('status')->default('ACTIVE');
             $table->date('date');
             $table->timestamps();
