@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('medida');
             $table->unsignedBigInteger('insumo_id');
             $table->foreign('insumo_id')->references('id')->on('insumos');
+            $table->unsignedBigInteger('category_insumo_id');
+            $table->foreign('category_insumo_id')->references('id')->on('category_insumos');
             $table->decimal('inicio',8,3);
             $table->decimal('ingreso',8,3);
             $table->decimal('egreso',8,3);

@@ -95,6 +95,7 @@ class SaleController extends Controller{
                     $diario->item = $insumo->name;
                     $diario->medida = $insumo->unit;
                     $diario->insumo_id = $insumo->id;
+                    $diario->category_insumo_id = $insumo->category_insumo_id;
                     $diario->inicio = $insumo->stock;
                     $diario->ingreso = 0;
                     $diario->egreso = 0;
