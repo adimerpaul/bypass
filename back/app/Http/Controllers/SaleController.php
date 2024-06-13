@@ -34,6 +34,37 @@ class SaleController extends Controller{
         }
         return $client;
     }
+    public function saleAnular(Request $request){
+        DB::beginTransaction();
+        try {
+            $sale = Sale::findOrFail($request->id);
+            $sale->status = 'ANULADO';
+            $sale->save();
+            foreach ($sale->details as $detail) {
+                $detail->status = 'ANULADO';
+                $detail->save();
+                $insumos = InsumoProduct::where('product_id', $detail->product_id)->get();
+                if ($insumos->count() > 0) {
+                    foreach ($insumos as $insumo) {
+                        $insumoSale = InsumoSale::where('insumo_id', $insumo->insumo_id)->where('sale_id', $sale->id)->first();
+                        if($insumoSale){
+                            $insumoSale->status = 'ANULADO';
+                            $insumoSale->save();
+                        }
+
+                        $insumoUpdate = Insumo::findOrFail($insumo->insumo_id);
+                        $insumoUpdate->stock += $detail->quantity * $insumo->quantity;
+                        $insumoUpdate->save();
+                    }
+                }
+            }
+            DB::commit();
+            return $sale;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function store(Request $request){
         DB::beginTransaction();
         try {

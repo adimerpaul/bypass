@@ -17,6 +17,7 @@ return new class extends Migration
             $table->double('price', 8, 2);
             $table->double('subtotal', 8, 2);
             $table->string('product');
+            $table->string('status')->default('ACTIVO');
 
             $table->unsignedBigInteger('client_id');
             $table->foreign('client_id')->references('id')->on('clients');

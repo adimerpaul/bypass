@@ -31,17 +31,20 @@ export class Alert {
 
   static confirm (message) {
     return Dialog.create({
-      title: 'Confirmación',
+      title: '<span style="color: red">Confirmación</span>',
       message,
+      html: true,
       // position: 'top',
       color: 'positive',
       ok: {
         label: 'Aceptar',
-        color: 'positive'
+        color: 'positive',
+        push: true
       },
       cancel: {
         label: 'Cancelar',
-        color: 'negative'
+        color: 'negative',
+        push: true
       },
     })
   }

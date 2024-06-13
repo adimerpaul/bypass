@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('total', 8, 2);
             $table->text('name');
             $table->string('type')->default('INGRESO');
+            $table->string('status')->default('ACTIVO');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

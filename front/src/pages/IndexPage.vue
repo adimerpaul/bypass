@@ -40,10 +40,27 @@
               <tbody>
               <tr v-for="sale in sales" :key="sale.id">
                 <td>
+                  <q-btn-dropdown label="Opciones" no-caps size="10px" dense :color="sale.status === 'ANULADO' ? 'red' : 'green'" auto-close
+                                  v-if="sale.status !== 'ANULADO'">
+                    <q-item clickable v-ripple @click="reimprimir(sale)">
+                      <q-item-section avatar>
+                        <q-icon name="print" />
+                      </q-item-section>
+                      <q-item-section>Reimprimir</q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="anular(sale)">
+                      <q-item-section avatar>
+                        <q-icon name="cancel" />
+                      </q-item-section>
+                      <q-item-section>Anular</q-item-section>
+                    </q-item>
+                  </q-btn-dropdown>
+                  <q-chip v-if="sale.status === 'ANULADO'" color="red" text-color="white" label="Anulado" size="12px" dense/>
                 </td>
                 <td>{{$filters.formatdMYHi(sale.date+' '+sale.time)}}</td>
                 <td>
-                  {{sale.type}}
+                  <q-chip v-if="sale.type === 'INGRESO'" color="green" text-color="white" label="Ingreso" size="12px" dense/>
+                  <q-chip v-if="sale.type === 'EGRESO'" color="red" text-color="white" label="Egreso" size="12px" dense/>
                 </td>
                 <td>
                   <div class="text-caption" style="max-width: 400px; white-space: normal; overflow-wrap: break-word;line-height: 0.9;">
@@ -86,6 +103,22 @@ export default {
     this.salesGet();
   },
   methods: {
+    reimprimir(sale) {
+      console.log('reimprimir', sale);
+    },
+    anular(sale) {
+      this.$alert.confirm('¿Está seguro de anular la venta?').onOk(() => {
+        this.$axios.post(`saleAnular`,{
+          id: sale.id
+        }).then(response => {
+          this.$alert.success('Venta anulada');
+          this.salesGet();
+        }).catch(error => {
+          console.error(error);
+          this.$alert.error('Error al anular la venta');
+        });
+      });
+    },
     salesGet() {
       this.loading = true;
       this.$axios.get('/sales', {
@@ -106,14 +139,14 @@ export default {
     ingresos() {
       let total = 0;
       this.sales.forEach(sale => {
-        if (sale.type === 'INGRESO') total += sale.total;
+        if (sale.type === 'INGRESO' && sale.status !== 'ANULADO') total += sale.total;
       });
       return total;
     },
     egresos() {
       let total = 0;
       this.sales.forEach(sale => {
-        if (sale.type === 'EGRESO') total += sale.total;
+        if (sale.type === 'EGRESO' && sale.status !== 'ANULADO') total += sale.total;
       });
       return total;
     },
