@@ -40,14 +40,18 @@
               <tbody>
               <tr v-for="sale in sales" :key="sale.id">
                 <td>
-<!--                  <q-btn flat dense icon="edit" @click="saleEdit(sale)" color="primary" />-->
-<!--                  <q-btn flat dense icon="delete" @click="saleDelete(sale)" color="negative" />-->
                 </td>
-                <td>{{sale.date}}</td>
-                <td>{{sale.type}}</td>
-                <td>{{sale.textDetail}}</td>
+                <td>{{$filters.formatdMYHi(sale.date+' '+sale.time)}}</td>
+                <td>
+                  {{sale.type}}
+                </td>
+                <td>
+                  <div class="text-caption" style="max-width: 400px; white-space: normal; overflow-wrap: break-word;line-height: 0.9;">
+                    {{sale.textDetail}}
+                  </div>
+                </td>
                 <td>{{sale.name}}</td>
-                <td>{{sale.total}}</td>
+                <td class="text-bold">{{sale.total}} Bs</td>
                 <td>{{sale.user?.name}}</td>
               </tr>
               </tbody>

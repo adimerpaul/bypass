@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios from 'axios'
 import {Alert} from "src/addons/Alert";
 import {useCounterStore} from "stores/example-store";
+import moment from "moment";
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -29,6 +30,11 @@ export default boot(({ app, router }) => {
       const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
       const date = new Date(value)
       return `${date.getDate()} ${meses[date.getMonth()]} ${date.getFullYear()}`
+    },
+    formatdMYHi: function (value) {
+      const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+      const date = moment(value)
+      return `${date.format('DD')} ${meses[date.month()]} ${date.year()} ${date.format('HH:mm')}`
     },
     capitalize: function (value) {
       const lower = value.toLowerCase()

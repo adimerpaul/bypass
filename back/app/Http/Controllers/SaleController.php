@@ -16,7 +16,8 @@ class SaleController extends Controller{
     public function index(Request $request){
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
-        $sales = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])->get();
+        $sales = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
+            ->orderBy('id', 'desc')->get();
         return $sales;
     }
     public function upsertClient($ci, $name){
