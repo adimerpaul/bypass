@@ -64,7 +64,7 @@
                 </td>
                 <td>
                   <div class="text-caption" style="max-width: 400px; white-space: normal; overflow-wrap: break-word;line-height: 0.9;">
-                    {{sale.textDetail}}
+                    {{sale.descripcion}}
                   </div>
                 </td>
                 <td>{{sale.name}}</td>
@@ -98,13 +98,22 @@ export default {
       fechaFin: moment().format('YYYY-MM-DD'),
       sales: [],
       egresoDialog: false,
-      egereso: {}
+      egereso: {},
+      provedores: []
     }
   },
   mounted() {
     this.salesGet();
+    this.provedoresGet();
   },
   methods: {
+    provedoresGet() {
+      this.$axios.get('/provedores').then(response => {
+        this.provedores = response.data;
+      }).catch(error => {
+        console.error(error);
+      });
+    },
     egreseClick() {
       this.egresoDialog = true;
     },

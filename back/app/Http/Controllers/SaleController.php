@@ -81,6 +81,7 @@ class SaleController extends Controller{
             $sale->name = $name;
             $sale->user_id = $request->user()->id;
             $sale->client_id = $client->id;
+            $sale->descripcion = '';
             $sale->save();
             foreach ($request->products as $product) {
                 $detail = new Detail();
@@ -94,6 +95,8 @@ class SaleController extends Controller{
                 $detail->product_id = $product['id'];
                 $detail->save();
                 $sale->total += $detail->subtotal;
+                $nameLower = strtolower($product['name']);
+                $sale->descripcion = $sale->descripcion. $product['cantidadSale'] . ' '. $nameLower . ' ';
 
                 // Insumos de la venta
                 $insumos = InsumoProduct::where('product_id', $product['id'])->get();
@@ -146,14 +149,14 @@ class SaleController extends Controller{
             }
         }
     }
-    public function update(Request $request, $id){
-        $sale = Sale::findOrFail($id);
-        $sale->update($request->all());
-        return $sale;
-    }
-    public function delete(Request $request, $id){
-        $sale = Sale::findOrFail($id);
-        $sale->delete();
-        return 204;
-    }
+//    public function update(Request $request, $id){
+//        $sale = Sale::findOrFail($id);
+//        $sale->update($request->all());
+//        return $sale;
+//    }
+//    public function delete(Request $request, $id){
+//        $sale = Sale::findOrFail($id);
+//        $sale->delete();
+//        return 204;
+//    }
 }

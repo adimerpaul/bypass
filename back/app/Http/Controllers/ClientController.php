@@ -6,6 +6,9 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller{
+    public function provedores(){
+        return Client::where('type', 'PROVEEDOR')->get();
+    }
     public function index(){
         return Client::orderBy('id', 'desc')->get();
     }

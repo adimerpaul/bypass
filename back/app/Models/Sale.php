@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     use HasFactory;
-    protected $fillable = ['date', 'time', 'total', 'name', 'user_id', 'client_id'];
+    protected $fillable = ['date', 'time', 'total', 'name', 'user_id', 'client_id','descripcion', 'type', 'status'];
     protected $hidden = ['created_at', 'updated_at'];
     public function user()
     {
@@ -22,13 +22,13 @@ class Sale extends Model
     {
         return $this->hasMany(Detail::class);
     }
-    protected $appends = ['textDetail'];
-    public function getTextDetailAttribute()
-    {
-        $text = '';
-        foreach ($this->details as $detail) {
-            $text = $text.$detail->quantity.' '. strtolower($detail->product).' ';
-        }
-        return $text;
-    }
+//    protected $appends = ['textDetail'];
+//    public function getTextDetailAttribute()
+//    {
+//        $text = '';
+//        foreach ($this->details as $detail) {
+//            $text = $text.$detail->quantity.' '. strtolower($detail->product).' ';
+//        }
+//        return $text;
+//    }
 }
