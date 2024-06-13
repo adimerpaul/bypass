@@ -1,55 +1,103 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row">
-      <div class="col-12 col-md-4">
-        <CardComponent title="Usuarios" icon="o_people" to="/users" color="indigo" :amount="prestamos" />
-      </div>
-<!--      <div class="col-12 col-md-4">-->
-<!--        <CardComponent title="Clientes" icon="o_people" to="/clients" color="green" :amount="clientes" />-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-4">-->
-<!--        <CardComponent title="Deudores" icon="o_people" to="/debtors" color="red" :amount="deudores" />-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-4">-->
-<!--        <CardComponent title="Pagos" icon="o_payment" to="/payments" color="blue" :amount="pagos" />-->
-<!--      </div>-->
-<!--      <div class="col-12 col-md-4">-->
-<!--        <CardComponent title="Prestamos Finalizados" icon="o_done_all" to="/finished-loans" color="purple" :amount="prestamosFinalizados" />-->
-<!--      </div>-->
-    </div>
+  <q-page class="q-pa-md bg-grey-3">
+    <q-card>
+      <q-card-section class="q-pa-xs">
+        <div class="row">
+          <div class="col-12 col-md-2">
+            <q-input v-model="fechaInicio" label="Fecha Inicio" type="date" outlined dense />
+          </div>
+          <div class="col-12 col-md-2">
+            <q-input v-model="fechaFin" label="Fecha Fin" type="date" outlined dense />
+          </div>
+          <div class="col-12 col-md-2 text-center">
+            <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
+          </div>
+          <div class="col-12 col-md-6 text-right">
+            <q-btn label="Egreso" color="red" @click="salesGet"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <card2-component title="Ingresos" :subtitle="ingresos+' Bs.'" icon="trending_up" color="green"/>
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <card2-component title="Egresos" :subtitle="egresos+' Bs.'" icon="trending_down" color="red"/>
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <card2-component title="Utilidad" :subtitle="utilidad+' Bs.'" icon="trending_flat" color="blue"/>
+          </div>
+          <div class="col-12">
+            <q-markup-table dense wrap-cells>
+              <thead class="bg-black text-white">
+              <tr>
+                <th class="text-center">Fecha</th>
+                <th class="text-center">Tipo</th>
+                <th class="text-center">Total</th>
+              </tr>
+              </thead>
+            </q-markup-table>
+          </div>
+          <div class="col-12">
+            <pre>{{sales}}</pre>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import CardComponent from "components/CardComponent.vue";
+import moment from "moment";
+import Card2Component from "components/Card2Component.vue";
 
-export default defineComponent({
+export default {
   name: 'IndexPage',
-  components: {CardComponent},
-  data() {
+  components: {Card2Component},
+  data () {
     return {
-      prestamos: 0,
-      clientes: 0,
-      deudores: 0,
-      pagos: 0,
-      prestamosFinalizados: 0
+      loading: false,
+      //principo de mes
+      fechaInicio: moment().format('YYYY-MM-DD'),
+      fechaFin: moment().format('YYYY-MM-DD'),
+      sales: []
     }
   },
   mounted() {
-    // this.getDashboard();
+    this.salesGet();
   },
   methods: {
-    getDashboard() {
-      this.$axios.get('dashboard')
-        .then(response => {
-          this.prestamos = response.data.prestamos;
-          this.clientes = response.data.clientes;
-          this.deudores = response.data.deudores;
-          this.pagos = response.data.pagos;
-          this.prestamosFinalizados = response.data.prestamosFinalizados;
-        })
+    salesGet() {
+      this.loading = true;
+      this.$axios.get('/sales', {
+        params: {
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin
+        }
+      }).then(response => {
+        this.sales = response.data;
+      }).catch(error => {
+        console.error(error);
+      }).finally(() => {
+        this.loading = false;
+      });
+    }
+  },
+  computed: {
+    ingresos() {
+      let total = 0;
+      this.sales.forEach(sale => {
+        if (sale.type === 'INGRESO') total += sale.total;
+      });
+      return total;
+    },
+    egresos() {
+      let total = 0;
+      this.sales.forEach(sale => {
+        if (sale.type === 'EGRESO') total += sale.total;
+      });
+      return total;
+    },
+    utilidad() {
+      return this.ingresos - this.egresos;
     }
   }
-})
+}
 </script>

@@ -13,8 +13,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller{
-    public function index(){
-        return Sale::all();
+    public function index(Request $request){
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+        $sales = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])->get();
+        return $sales;
     }
     public function upsertClient($ci, $name){
         $ci = $ci==null || $ci=='' ? 0 : $ci;

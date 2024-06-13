@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('cinit');
             $table->string('name');
             $table->string('email')->nullable();
+            $table->string('type')->default('CLIENTE');
             $table->timestamps();
         });
     }

@@ -22,4 +22,13 @@ class Sale extends Model
     {
         return $this->hasMany(Detail::class);
     }
+    protected $appends = ['textDetail'];
+    public function getTextDetailAttribute()
+    {
+        $text = '';
+        foreach ($this->details as $detail) {
+            $text = $text.$detail->quantity.' '. strtolower($detail->product).' ';
+        }
+        return $text;
+    }
 }
