@@ -26,12 +26,15 @@ class DiarioController extends Controller{
         foreach ($diario as $diar){
             $sumIngreso = Buy::where('date', $date)
                 ->where('insumo_id', $diar->insumo_id)
+                ->where('status', 'ACTIVE')
                 ->sum('quantity');
             $sumEgreso = Deregistration::where('date', $date)
                 ->where('insumo_id', $diar->insumo_id)
+                ->where('status', 'ACTIVE')
                 ->sum('quantity');
             $sumDetail = InsumoSale::where('date', $date)
                 ->where('insumo_id', $diar->insumo_id)
+                ->where('status', 'ACTIVE')
                 ->sum('quantity');
             $diar->ingreso = $sumIngreso;
             $diar->egreso = $sumEgreso;
