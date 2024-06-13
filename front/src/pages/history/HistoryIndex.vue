@@ -7,57 +7,79 @@
             <q-input v-model="date" type="date" label="Fecha" outlined dense :loading="loading" />
           </div>
           <div class="col-12 col-md-2 text-center">
-            <q-btn @click="diarioGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
+            <q-btn @click="buyGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
           </div>
-          <div class="col-12">
+        </div>
+        <div class="row">
+          <div class="col-6">
             <q-markup-table dense wrap-cells bordered>
               <thead>
               <tr>
-                <td colspan="9" class="text-center text-bold">Diario del {{ date }}</td>
-              </tr>
-              <tr>
-                <td colspan="9" class="text-center text-bold">{{ dia(date) }}</td>
+                <td colspan="8" class="text-center text-bold">COMPRAS</td>
               </tr>
               <tr class="bg-black text-white">
-                <th>Item</th>
-                <th>Medida</th>
-                <th>Inicio</th>
-                <th>Ingreso</th>
-                <th>Egreso</th>
-                <th>Ventas</th>
-                <th>Cierre</th>
-                <th>Local</th>
-                <th>Diferencia</th>
+                <td>Opcion</td>
+                <td>Insumo</td>
+                <td>Usuario</td>
+                <td>Cantidad</td>
+                <td>Precio</td>
+                <td>Total</td>
+                <td>Estado</td>
+                <td>Fecha</td>
               </tr>
               </thead>
               <tbody>
-              <template v-for="(item, index) in diario" :key="index">
-                <tr class="text-center">
-                  <td colspan="9" class="text-bold">{{ item.name }}</td>
-                </tr>
-                <tr v-for="(diario, index) in item.diario" :key="index">
-                  <td>{{ diario.item }}</td>
-                  <td>{{ diario.medida }}</td>
-                  <td class="text-right">
-                    <input v-model="diario.inicio" type="number" style="width: 100px;" @input="debouncedUpdate(diario)" />
-                  </td>
-                  <td class="text-right">{{ diario.ingreso }}</td>
-                  <td class="text-right">{{ diario.egreso }}</td>
-                  <td class="text-right">{{ diario.ventas }}</td>
-                  <td class="text-right">{{ diario.cierre }}</td>
-                  <td class="text-right">
-                    <input v-model="diario.local" type="number" style="width: 100px;" @input="debouncedUpdate(diario)" />
-                  </td>
-                  <td class="text-right">
-                    <div :class="diario.local - diario.cierre > 0 ? 'text-negative' : 'text-positive'">
-                      {{ diario.local - diario.cierre  }}
-                    </div>
-                  </td>
-                </tr>
-              </template>
+              <tr v-for="buy in buys" :key="buy.id">
+                <td class="q-pa-none q-ma-none">{{ buy.id }}</td>
+                <td class="q-pa-none q-ma-none">{{ buy.insumo?.name }}</td>
+                <td class="q-pa-none q-ma-none">{{ buy.user?.name }}</td>
+                <td class="q-pa-none q-ma-none">{{ buy.quantity }}</td>
+                <td class="q-pa-none q-ma-none">{{ buy.price }}</td>
+                <td class="q-pa-none q-ma-none">{{ buy.total }}</td>
+                <td class="q-pa-none q-ma-none">
+                  <q-chip v-if="buy.status === 'ACTIVE'" color="green" text-color="white" label="Activo" dense size="10px" />
+                  <q-chip v-else color="red" text-color="white" label="Inactivo" dense size="10px" />
+                </td>
+                <td class="q-pa-none q-ma-none">{{ $filters.formatdMYHi(buy.date+' '+buy.time) }}</td>
+              </tr>
               </tbody>
             </q-markup-table>
-<!--            <pre>{{ diario }}</pre>-->
+<!--            <pre>{{ buys }}</pre>-->
+          </div>
+          <div class="col-6">
+            <q-markup-table dense wrap-cells bordered>
+              <thead>
+              <tr>
+                <td colspan="8" class="text-center text-bold">BAJAS</td>
+              </tr>
+              <tr class="bg-black text-white">
+                <td>Opcion</td>
+                <td>Insumo</td>
+                <td>Usuario</td>
+                <td>Cantidad</td>
+                <td>Precio</td>
+                <td>Total</td>
+                <td>Estado</td>
+                <td>Fecha</td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="deregistration in deregistrations" :key="deregistration.id">
+                <td class="q-pa-none q-ma-none">{{ deregistration.id }}</td>
+                <td class="q-pa-none q-ma-none">{{ deregistration.insumo?.name }}</td>
+                <td class="q-pa-none q-ma-none">{{ deregistration.user?.name }}</td>
+                <td class="q-pa-none q-ma-none">{{ deregistration.quantity }}</td>
+                <td class="q-pa-none q-ma-none">{{ deregistration.price }}</td>
+                <td class="q-pa-none q-ma-none">{{ deregistration.total }}</td>
+                <td class="q-pa-none q-ma-none">
+                  <q-chip v-if="deregistration.status === 'ACTIVE'" color="green" text-color="white" label="Activo" dense size="10px" />
+                  <q-chip v-else color="red" text-color="white" label="Inactivo" dense size="10px" />
+                </td>
+                <td class="q-pa-none q-ma-none">{{ $filters.formatdMYHi(deregistration.date+' '+deregistration.time) }}</td>
+              </tr>
+              </tbody>
+            </q-markup-table>
+<!--            <pre>{{ deregistrations }}</pre>-->
           </div>
         </div>
       </q-card-section>
@@ -67,41 +89,35 @@
 
 <script>
 import moment from "moment";
-import debounce from "lodash.debounce";
 
 export default {
   name: "DiariesIndex",
   data() {
     return {
       date: moment().format("YYYY-MM-DD"),
-      diario: {},
+      buys: [],
+      deregistrations: [],
       loading: false
     };
   },
   mounted() {
-    this.diarioGet();
+    this.buyGet();
   },
   methods: {
-    update(diario) {
-      console.log(diario);
-      this.$axios.put("diario/" + diario.id, diario).then(response => {
-        console.log(response.data);
-      });
-    },
-    debouncedUpdate: debounce(function(diario) {
-      this.update(diario);
-    }, 500), // 500ms debounce time
-    diarioGet() {
+    buyGet() {
       this.loading = true;
-      this.$axios.get("diarioDate/" + this.date).then(response => {
-        this.diario = response.data;
+      this.$axios.get("buys", {
+        params: {
+          date: this.date
+        }
+      }).then(response => {
+        this.buys = response.data.buys;
+        this.deregistrations = response.data.deregistrations;
+      }).catch(error => {
+        this.$alert.error(error.response.data.message);
       }).finally(() => {
         this.loading = false;
       });
-    },
-    dia(fecha) {
-      const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-      return dias[moment(fecha).day()];
     }
   }
 };

@@ -26,6 +26,7 @@ class InsumoController extends Controller{
             $buy->price = $insumo['price'];
             $buy->total = floatval($insumo['cantidadSale']) * floatval($insumo['price']);
             $buy->date = date('Y-m-d');
+            $buy->time = date('H:i:s');
             $buy->save();
         }
         return $insumos;

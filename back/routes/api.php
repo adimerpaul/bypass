@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
     Route::get('/diarioDate/{date}', [\App\Http\Controllers\DiarioController::class, 'diarioDate']);
     Route::put('/diario/{diario}', [\App\Http\Controllers\DiarioController::class, 'update']);
+
+    Route::get('/buys', [\App\Http\Controllers\BuyController::class, 'index']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);

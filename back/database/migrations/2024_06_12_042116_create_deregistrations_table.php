@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('status')->default('ACTIVE');
             $table->string('description')->nullable();
             $table->date('date');
+            $table->time('time');
             $table->timestamps();
         });
     }
