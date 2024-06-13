@@ -70,6 +70,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::put('/diario/{diario}', [\App\Http\Controllers\DiarioController::class, 'update']);
 
     Route::get('/buys', [\App\Http\Controllers\BuyController::class, 'index']);
+    Route::put('/buysAnular/{buy}', [\App\Http\Controllers\BuyController::class, 'buysAnular']);
+    Route::put('/deregistrationsAnular/{deregistration}', [\App\Http\Controllers\BuyController::class, 'deregistrationsAnular']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);

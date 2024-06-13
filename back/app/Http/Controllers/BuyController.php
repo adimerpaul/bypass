@@ -19,4 +19,17 @@ class BuyController extends Controller{
             ->get();
         return response()->json(['buys' => $buys, 'deregistrations' => $deregistrations]);
     }
+    function buysAnular(Request $request, $id){
+        $buy = Buy::find($id);
+        $buy->status = 'ANULADO';
+        $buy->save();
+        return $buy;
+    }
+
+    function deregistrationsAnular(Request $request, $id){
+        $deregistration = Deregistration::find($id);
+        $deregistration->status = 'ANULADO';
+        $deregistration->save();
+        return $deregistration;
+    }
 }

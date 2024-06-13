@@ -30,7 +30,10 @@
               </thead>
               <tbody>
               <tr v-for="buy in buys" :key="buy.id">
-                <td class="q-pa-none q-ma-none">{{ buy.id }}</td>
+                <td class="q-pa-none q-ma-none">
+                  <q-btn dense size="10px" color="primary" @click="buyAnular(buy.id)" label="Anular" icon="cancel" no-caps v-if="buy.status === 'ACTIVE'" />
+                  <q-chip v-else color="grey" text-color="white" label="Anulado" dense size="10px" />
+                </td>
                 <td class="q-pa-none q-ma-none">{{ buy.insumo?.name }}</td>
                 <td class="q-pa-none q-ma-none">{{ buy.user?.name }}</td>
                 <td class="q-pa-none q-ma-none">{{ buy.quantity }}</td>
@@ -65,7 +68,10 @@
               </thead>
               <tbody>
               <tr v-for="deregistration in deregistrations" :key="deregistration.id">
-                <td class="q-pa-none q-ma-none">{{ deregistration.id }}</td>
+                <td class="q-pa-none q-ma-none">
+                  <q-btn dense size="10px" color="primary" @click="deregistrationAnular(deregistration.id)" label="Anular" icon="cancel" no-caps v-if="deregistration.status === 'ACTIVE'" />
+                  <q-chip v-else color="grey" text-color="white" label="Anulado" dense size="10px" />
+                </td>
                 <td class="q-pa-none q-ma-none">{{ deregistration.insumo?.name }}</td>
                 <td class="q-pa-none q-ma-none">{{ deregistration.user?.name }}</td>
                 <td class="q-pa-none q-ma-none">{{ deregistration.quantity }}</td>
@@ -104,6 +110,28 @@ export default {
     this.buyGet();
   },
   methods: {
+    deregistrationAnular(id) {
+      this.$alert.confirm('¿Está seguro de anular la baja?').onOk(() => {
+        this.$axios.put(`deregistrationsAnular/${id}`).then((data) => {
+          const find = this.deregistrations.find(deregistration => deregistration.id === id);
+          find.status = "INACTIVE";
+          this.$alert.success('Baja anulada');
+        }).catch(error => {
+          this.$alert.error(error.response.data.message);
+        });
+      });
+    },
+    buyAnular(id) {
+      this.$alert.confirm('¿Está seguro de anular la compra?').onOk(() => {
+        this.$axios.put(`buysAnular/${id}`).then((data) => {
+          const find = this.buys.find(buy => buy.id === id);
+          find.status = "INACTIVE";
+          this.$alert.success('Compra anulada');
+        }).catch(error => {
+          this.$alert.error(error.response.data.message);
+        });
+      });
+    },
     buyGet() {
       this.loading = true;
       this.$axios.get("buys", {
