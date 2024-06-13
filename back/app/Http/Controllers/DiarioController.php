@@ -52,4 +52,8 @@ class DiarioController extends Controller{
         }
         return response()->json($result);
     }
+    function update(Request $request, Diario $diario){
+        $diario->update($request->all());
+        return response()->json($diario);
+    }
 }

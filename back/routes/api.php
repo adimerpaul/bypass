@@ -67,6 +67,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/deregistrations', [\App\Http\Controllers\DeregistrationController::class, 'store']);
 
     Route::get('/diarioDate/{date}', [\App\Http\Controllers\DiarioController::class, 'diarioDate']);
+    Route::put('/diario/{diario}', [\App\Http\Controllers\DiarioController::class, 'update']);
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);
