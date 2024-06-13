@@ -74,9 +74,9 @@
               </tbody>
             </q-markup-table>
           </div>
-          <div class="col-12">
-            <pre>{{sales}}</pre>
-          </div>
+<!--          <div class="col-12">-->
+<!--            <pre>{{sales}}</pre>-->
+<!--          </div>-->
         </div>
       </q-card-section>
     </q-card>
