@@ -66,7 +66,7 @@ class SaleController extends Controller{
                     $insumoSale = new InsumoSale();
                     $insumoSale->insumo_id = $insumo->insumo_id;
                     $insumoSale->sale_id = $sale->id;
-                    $insumoSale->quantity = $product['cantidadSale'];
+                    $insumoSale->quantity = $product['cantidadSale']* $insumo->quantity;
                     $insumoSale->date = date('Y-m-d');
                     $insumoSale->user_id = $request->user()->id;
                     $insumoSale->save();

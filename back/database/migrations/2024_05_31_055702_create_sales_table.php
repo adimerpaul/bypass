@@ -16,7 +16,8 @@ return new class extends Migration
             $table->date('date');
             $table->time('time');
             $table->double('total', 8, 2);
-            $table->string('name', 20);
+            $table->text('name');
+            $table->string('type')->default('INGRESO');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

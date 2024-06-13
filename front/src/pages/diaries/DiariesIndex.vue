@@ -73,13 +73,13 @@
                   <tr v-for="(diario, index) in item.diario" :key="index">
                     <td>{{ diario.item }}</td>
                     <td>{{ diario.medida }}</td>
-                    <td>{{ diario.inicio }}</td>
-                    <td>{{ diario.ingreso }}</td>
-                    <td>{{ diario.egreso }}</td>
-                    <td>{{ diario.ventas }}</td>
-                    <td>{{ diario.cierre }}</td>
-                    <td>{{ diario.local }}</td>
-                    <td>{{ diario.cierre - diario.local }}</td>
+                    <td class="text-right">{{ diario.inicio }}</td>
+                    <td class="text-right">{{ diario.ingreso }}</td>
+                    <td class="text-right">{{ diario.egreso }}</td>
+                    <td class="text-right">{{ diario.ventas }}</td>
+                    <td class="text-right">{{ diario.cierre }}</td>
+                    <td class="text-right">{{ diario.local }}</td>
+                    <td class="text-right">{{ diario.cierre - diario.local }}</td>
                   </tr>
                 </template>
               </tbody>
@@ -106,7 +106,7 @@ export default {
     }
   },
   mounted() {
-    // this.diarioGet();
+    this.diarioGet();
   },
   methods: {
     diarioGet() {
