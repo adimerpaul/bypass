@@ -65,18 +65,20 @@ class SaleController extends Controller{
 
                 // Insumos de la venta
                 $insumos = InsumoProduct::where('product_id', $product['id'])->get();
-                foreach ($insumos as $insumo) {
-                    $insumoSale = new InsumoSale();
-                    $insumoSale->insumo_id = $insumo->insumo_id;
-                    $insumoSale->sale_id = $sale->id;
-                    $insumoSale->quantity = $product['cantidadSale']* $insumo->quantity;
-                    $insumoSale->date = date('Y-m-d');
-                    $insumoSale->user_id = $request->user()->id;
-                    $insumoSale->save();
+                if ($insumos->count() > 0) {
+                    foreach ($insumos as $insumo) {
+                        $insumoSale = new InsumoSale();
+                        $insumoSale->insumo_id = $insumo->insumo_id;
+                        $insumoSale->sale_id = $sale->id;
+                        $insumoSale->quantity = $product['cantidadSale']* $insumo->quantity;
+                        $insumoSale->date = date('Y-m-d');
+                        $insumoSale->user_id = $request->user()->id;
+                        $insumoSale->save();
 
-                    $insumoUpdate = Insumo::findOrFail($insumo->insumo_id);
-                    $insumoUpdate->stock -= $product['cantidadSale'] * $insumo->quantity;
-                    $insumoUpdate->save();
+                        $insumoUpdate = Insumo::findOrFail($insumo->insumo_id);
+                        $insumoUpdate->stock -= $product['cantidadSale'] * $insumo->quantity;
+                        $insumoUpdate->save();
+                    }
                 }
             }
             $sale->save();

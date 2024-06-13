@@ -104,7 +104,7 @@
               Total :{{ $store.orders.reduce((acc, order) => acc + (order.price * order.cantidadSale), 0).toFixed(2) }} Bs
             </div>
             <div class="col-12 col-md-4">
-              <q-input v-model="recibido" label="Recibido" outlined dense clearable/>
+              <q-input v-model="recibido" label="Monto recibido" outlined dense clearable/>
             </div>
             <div class="col-12 col-md-4 text-blue text-subtitle1 text-bold">
               <div v-if="recibido !== ''">

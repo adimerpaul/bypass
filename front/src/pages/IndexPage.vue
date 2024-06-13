@@ -28,11 +28,29 @@
             <q-markup-table dense wrap-cells>
               <thead class="bg-black text-white">
               <tr>
-                <th class="text-center">Fecha</th>
-                <th class="text-center">Tipo</th>
-                <th class="text-center">Total</th>
+                <th>Opciones</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripcion</th>
+                <th>Name</th>
+                <th>Total</th>
+                <th>Usuario</th>
               </tr>
               </thead>
+              <tbody>
+              <tr v-for="sale in sales" :key="sale.id">
+                <td>
+<!--                  <q-btn flat dense icon="edit" @click="saleEdit(sale)" color="primary" />-->
+<!--                  <q-btn flat dense icon="delete" @click="saleDelete(sale)" color="negative" />-->
+                </td>
+                <td>{{sale.date}}</td>
+                <td>{{sale.type}}</td>
+                <td>{{sale.textDetail}}</td>
+                <td>{{sale.name}}</td>
+                <td>{{sale.total}}</td>
+                <td>{{sale.user?.name}}</td>
+              </tr>
+              </tbody>
             </q-markup-table>
           </div>
           <div class="col-12">
