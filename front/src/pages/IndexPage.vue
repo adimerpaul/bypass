@@ -40,7 +40,7 @@
               <tbody>
               <tr v-for="sale in sales" :key="sale.id">
                 <td>
-                  <q-btn-dropdown label="Opciones" no-caps size="10px" dense :color="sale.status === 'ANULADO' ? 'red' : 'green'" auto-close
+                  <q-btn-dropdown label="Opciones" no-caps size="10px" dense :color="sale.type === 'EGRESO' ? 'red' : 'green'" auto-close
                                   v-if="sale.status !== 'ANULADO'">
                     <q-item clickable v-ripple @click="reimprimir(sale)">
                       <q-item-section avatar>
@@ -80,6 +80,26 @@
         </div>
       </q-card-section>
     </q-card>
+    <q-dialog v-model="egresoDialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Egreso</div>
+          <q-space />
+          <q-btn flat round dense icon="close" @click="egresoDialog = false" />
+        </q-card-section>
+        <q-card-section>
+          <q-form @submit="egresoPost">
+            <q-input v-model="egreso.total" label="Total" type="number" outlined dense :rules="[val => !!val || 'Campo requerido']" step="0.01" />
+            <q-select v-model="egreso.provedor_id" label="Provedor" outlined dense :options="provedores" option-value="id" option-label="name" :rules="[val => !!val || 'Campo requerido']" />
+            <q-input v-model="egreso.descripcion" label="Descripcion" type="text" outlined dense :rules="[val => !!val || 'Campo requerido']" />
+            <q-card-actions align="right">
+              <q-btn label="Cancelar" color="red" @click="egresoDialog = false" no-caps icon="close" :loading="loading"></q-btn>
+              <q-btn label="Guardar" color="green" type="submit" no-caps icon="save" :loading="loading"></q-btn>
+            </q-card-actions>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -98,7 +118,7 @@ export default {
       fechaFin: moment().format('YYYY-MM-DD'),
       sales: [],
       egresoDialog: false,
-      egereso: {},
+      egreso: {},
       provedores: []
     }
   },
@@ -107,6 +127,19 @@ export default {
     this.provedoresGet();
   },
   methods: {
+    egresoPost() {
+      this.loading = true;
+      this.$axios.post('/egresos',this.egreso).then(response => {
+        this.$alert.success('Egreso registrado');
+        this.salesGet();
+        this.egresoDialog = false;
+      }).catch(error => {
+        console.error(error);
+        this.$alert.error('Error al registrar el egreso');
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
     provedoresGet() {
       this.$axios.get('/provedores').then(response => {
         this.provedores = response.data;
@@ -116,6 +149,11 @@ export default {
     },
     egreseClick() {
       this.egresoDialog = true;
+      this.egreso = {
+        total: '',
+        provedor_id: '',
+        descripcion: ''
+      };
     },
     reimprimir(sale) {
       console.log('reimprimir', sale);

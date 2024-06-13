@@ -65,6 +65,22 @@ class SaleController extends Controller{
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function egresos(Request $request){
+//        protected $fillable = ['date', 'time', 'total', 'name', 'user_id', 'client_id','descripcion', 'type', 'status'];
+        $provedor_id = $request->provedor_id['id'];
+        $client = Client::find($provedor_id);
+        error_log('client: '. $client->name);
+        $sale = new Sale();
+        $sale->date = date('Y-m-d');
+        $sale->time = date('H:i:s');
+        $sale->total = $request->total;
+        $sale->name = $client->name;
+        $sale->user_id = $request->user()->id;
+        $sale->client_id = $provedor_id;
+        $sale->descripcion = $request->descripcion;
+        $sale->type = 'EGRESO';
+        $sale->save();
+    }
     public function store(Request $request){
         DB::beginTransaction();
         try {
@@ -96,7 +112,7 @@ class SaleController extends Controller{
                 $detail->save();
                 $sale->total += $detail->subtotal;
                 $nameLower = strtolower($product['name']);
-                $sale->descripcion = $sale->descripcion. $product['cantidadSale'] . ' '. $nameLower . ' ';
+                $sale->descripcion = $sale->descripcion. $product['cantidadSale'] . ' '. $nameLower . ',';
 
                 // Insumos de la venta
                 $insumos = InsumoProduct::where('product_id', $product['id'])->get();
