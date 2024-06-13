@@ -120,7 +120,7 @@ export default {
         { title: 'Inicio', icon: 'home', to: '/' },
         { title: 'Ventas', icon: 'shopping_basket', to: '/sales' },
         { title: 'Insumos', icon: 'inventory_2', to: '/supplies' },
-        { title: 'Transacciones', icon: 'shopping_cart', to: '/purchases' },
+        { title: 'history', icon: 'shopping_cart', to: '/purchases' },
         { title: 'Historial', icon: 'history', to: '/history' },
         { title: 'Diarios', icon: 'assignment', to: '/diaries' },
         { title: 'Productos', icon: 'shopping_cart', to: '/products' },

@@ -49,7 +49,7 @@
                     <input v-model="diario.local" type="number" style="width: 100px;" @input="debouncedUpdate(diario)" />
                   </td>
                   <td class="text-right">
-                    <div :class="diario.local - diario.cierre < 0 ? 'text-negative' : 'text-positive'">
+                    <div :class="diario.local - diario.cierre > 0 ? 'text-negative' : 'text-positive'">
                       {{ diario.local - diario.cierre  }}
                     </div>
                   </td>

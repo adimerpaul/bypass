@@ -12,6 +12,7 @@ const routes = [
       { path: 'supplies', component: () => import('pages/supplies/SuppliesIndex.vue'), meta: { requiresAuth: true } },
       { path: 'purchases', component: () => import('pages/purchases/PurchasesIndex.vue'), meta: { requiresAuth: true } },
       { path: 'diaries', component: () => import('pages/diaries/DiariesIndex.vue'), meta: { requiresAuth: true } },
+      { path: 'history', component: () => import('pages/history/HistoryIndex.vue'), meta: { requiresAuth: true } },
     ]
   },
   {
