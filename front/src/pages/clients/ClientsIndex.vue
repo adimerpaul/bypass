@@ -21,6 +21,11 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:body-cell-type="props">
+        <q-td :props="props">
+          <q-chip dense :label="props.row.type" :color="props.row.type === 'CLIENTE' ? 'green' : 'blue'" text-color="white" />
+        </q-td>
+      </template>
     </q-table>
     <q-dialog v-model="clientDialog" persistent>
       <q-card style="width: 250px;max-width: 90vw;">
@@ -38,6 +43,9 @@
             </div>
             <div class="col-12">
               <q-input v-model="client.name" dense outlined type="text" label="Nombre" :rules="[val => !!val || 'Campo requerido']" />
+            </div>
+            <div class="col-12">
+              <q-select v-model="client.type" dense outlined type="text" label="Tipo" :rules="[val => !!val || 'Campo requerido']" :options="['CLIENTE', 'PROVEEDOR']" />
             </div>
             <div class="col-12">
               <q-input v-model="client.email" dense outlined type="text" label="Correo" />
@@ -64,7 +72,8 @@ export default {
         { name: 'id', label: 'ID', align: 'left', field: row => row.id },
         { name: 'name', label: 'Nombre', align: 'left', field: row => row.name },
         { name: 'cinit', label: 'C.I. o NIT', align: 'left', field: row => row.cinit },
-        { name: 'email', label: 'Correo', align: 'left', field: row => row.email }
+        { name: 'email', label: 'Correo', align: 'left', field: row => row.email },
+        { name: 'type', label: 'Tipo', align: 'left', field: row => row.type },
       ],
       loading: false,
       clients: [],

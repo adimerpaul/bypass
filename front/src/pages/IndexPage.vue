@@ -13,7 +13,7 @@
             <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
           </div>
           <div class="col-12 col-md-6 text-right">
-            <q-btn label="Egreso" color="red" @click="salesGet"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
+            <q-btn label="Egreso" color="red" @click="egreseClick"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
             <card2-component title="Ingresos" :subtitle="ingresos+' Bs.'" icon="trending_up" color="green"/>
@@ -96,13 +96,18 @@ export default {
       //principo de mes
       fechaInicio: moment().format('YYYY-MM-DD'),
       fechaFin: moment().format('YYYY-MM-DD'),
-      sales: []
+      sales: [],
+      egresoDialog: false,
+      egereso: {}
     }
   },
   mounted() {
     this.salesGet();
   },
   methods: {
+    egreseClick() {
+      this.egresoDialog = true;
+    },
     reimprimir(sale) {
       console.log('reimprimir', sale);
     },

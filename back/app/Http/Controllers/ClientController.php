@@ -18,6 +18,7 @@ class ClientController extends Controller{
         $client->cinit = $request->cinit;
         $client->name = $request->name;
         $client->email = $request->email;
+        $client->type = $request->type;
         $client->save();
         return response()->json($client);
     }
@@ -27,6 +28,7 @@ class ClientController extends Controller{
         $client->cinit = $request->cinit;
         $client->name = $request->name;
         $client->email = $request->email;
+        $client->type = $request->type;
         $client->save();
         return response()->json($client);
     }
