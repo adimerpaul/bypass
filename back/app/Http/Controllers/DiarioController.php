@@ -59,4 +59,6 @@ class DiarioController extends Controller{
         $diario->update($request->all());
         return response()->json($diario);
     }
+
+
 }

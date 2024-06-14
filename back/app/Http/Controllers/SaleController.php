@@ -165,6 +165,10 @@ class SaleController extends Controller{
             }
         }
     }
+    
+    public function reportSale(Request $request){
+        return Sale::where('date',$request->date)->where('status','ACTIVO')->where('type','INGRESO')->get();
+    }
 //    public function update(Request $request, $id){
 //        $sale = Sale::findOrFail($id);
 //        $sale->update($request->all());

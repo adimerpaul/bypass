@@ -100,12 +100,14 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <div id="myelement" ></div>
   </q-page>
 </template>
 
 <script>
 import moment from "moment";
 import Card2Component from "components/Card2Component.vue";
+import { Printd } from 'printd'
 
 export default {
   name: 'IndexPage',
@@ -156,7 +158,59 @@ export default {
       };
     },
     reimprimir(sale) {
+      let cadena =''
+     if (sale.type=='INGRESO'){
       console.log('reimprimir', sale);
+      let contenido=''
+      let total=0
+      sale.details.forEach(r => {
+        contenido+='<tr><td>'+r.quantity+'</td><td>'+r.product+'</td><td>'+r.price+'</td><td>'+r.subtotal+'</td></tr>'
+        total += parseFloat(r.subtotal)
+      });
+      cadena=`<style>
+      .imagen{
+        width:60%
+      }
+      .titulo1 {
+      text-align:center;
+      font-weight:bold;
+      font-size:12px;
+      }
+      .titulo2 {
+      text-align:center;
+      font-size:10px;
+      }
+      .tab1{
+      width:100%;
+      text-align:center;
+      font-size:10px;
+      }
+      .tab2{
+      width:100%;
+      font-size:10px;
+      border-collapse: collapse;
+      }
+      .tab2  th{
+      border: .1px solid;
+      }
+      .pie{
+      text-align:center;
+      font-size:8px;}
+      </style>
+      <div style='text-align:center'><img class='imagen' src="logo2.png"></div>
+      <div class='titulo1'>CONTACTOS: 76130006</div>
+      <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
+      <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
+      <table class='tab2'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>
+      `+contenido+`      
+        <tr><td></td><td></td><td><b>TOTAL:</b></td><td>`+total.toFixed(1)+`</td></tr></table><br>
+      <div class='pie'>GRACIAS POR SU COMPRA, BUEN PROVECHO</div>`
+      
+
+     }
+     document.getElementById('myelement').innerHTML = cadena
+      const d = new Printd()
+      d.print(document.getElementById('myelement'))
     },
     anular(sale) {
       this.$alert.confirm('¿Está seguro de anular la venta?').onOk(() => {

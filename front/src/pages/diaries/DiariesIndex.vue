@@ -9,6 +9,9 @@
           <div class="col-12 col-md-2 text-center">
             <q-btn @click="diarioGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
           </div>
+          <div class="col-12 col-md-2 text-center">
+            <q-btn @click="getSales" class="text-bold" label="Ingresos" color="green" icon="list" no-caps :loading="loading" />
+          </div>
           <div class="col-12">
             <q-markup-table dense wrap-cells bordered>
               <thead>
@@ -61,13 +64,16 @@
           </div>
         </div>
       </q-card-section>
+      <div id="myelement" class="hidden"></div>
     </q-card>
   </q-page>
 </template>
 
 <script>
 import moment from "moment";
+import 'moment/locale/es';
 import debounce from "lodash.debounce";
+import { Printd } from 'printd'
 
 export default {
   name: "DiariesIndex",
@@ -80,8 +86,70 @@ export default {
   },
   mounted() {
     this.diarioGet();
+    //this.getSales();
   },
   methods: {
+    getSales(){
+    
+      this.$axios.post("reportSale" , {date: this.date}).then(res => {
+        if(res.data.length==0) return false
+        let cadena=''
+      let contenido=''
+      let total=0
+      moment.locale('es')
+      res.data.forEach(r => {
+        contenido+='<tr><td>'+r.time+'</td><td>'+r.name+'</td><td>'+r.total+'</td></tr>'
+        total += parseFloat(r.total)
+      });
+      cadena=`<style>
+      .imagen{
+        width:60%
+      }
+      .titulo1 {
+      text-align:center;
+      font-weight:bold;
+      font-size:12px;
+      }
+      .titulo2 {
+      text-align:center;
+      font-size:10px;
+      }
+      .tab1{
+      width:100%;
+      text-align:center;
+      font-size:10px;
+      border-collapse: collapse;
+      font-weight:bold;
+      }
+      .tab2{
+      width:100%;
+      font-size:10px;
+      border-collapse: collapse;
+      }
+      .tab2  th{
+      border: .1px solid;
+      }
+      .tab2 td{
+      text-align:center}
+      .pie{
+      text-align:center;
+      font-size:8px;}
+      </style>
+      <table class=tab1><tr><td >SUCURSAL <br> ORURO</td><td>TOTAL VENDIDO</td></tr><tr><td></td><td style='font-size:18px;'>`+total.toFixed(1)+` Bs</td></tr></table>
+      <div class='titulo1'>REPORTE VENTA DEL DIA</div>
+      <div class='titulo2'>`+moment(this.fecha).format("dddd, DD  MMMM  YYYY")+`</div>
+      <table class='tab2'><tr><th>HORA</th><th>DETALLE</th><th>TOTAL</th></tr>
+      `+contenido+`      
+        </table><br>
+      `
+      
+
+     document.getElementById('myelement').innerHTML = cadena
+      const d = new Printd()
+      d.print(document.getElementById('myelement'))
+      })
+
+    },
     update(diario) {
       console.log(diario);
       this.$axios.put("diario/" + diario.id, diario).then(response => {
