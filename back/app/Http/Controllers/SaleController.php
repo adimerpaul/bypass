@@ -98,6 +98,11 @@ class SaleController extends Controller{
             $sale->user_id = $request->user()->id;
             $sale->client_id = $client->id;
             $sale->descripcion = '';
+            $sale->type = 'INGRESO';
+            $sale->status = 'ACTIVO';
+            $sale->mesa = $request->mesa;
+            $sale->pago = $request->pago;
+            $sale->numero = $this->numeroGenerate();
             $sale->save();
             foreach ($request->products as $product) {
                 $detail = new Detail();
@@ -140,6 +145,12 @@ class SaleController extends Controller{
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function numeroGenerate(){
+        $date = date('Y-m-d');
+        $sales = Sale::where('date', $date)->where('type', 'INGRESO')->get();
+        $numero = $sales->count() + 1;
+        return $numero;
+    }
     public function createDiario(){
         $hoy = date('Y-m-d');
         if(Diario::where('date', $hoy)->count() == 0){
@@ -165,7 +176,7 @@ class SaleController extends Controller{
             }
         }
     }
-    
+
     public function reportSale(Request $request){
         return Sale::where('date',$request->date)->where('status','ACTIVO')->where('type','INGRESO')->get();
     }

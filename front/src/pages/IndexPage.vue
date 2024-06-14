@@ -202,11 +202,9 @@ export default {
       <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
       <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
       <table class='tab2'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>
-      `+contenido+`      
+      `+contenido+`
         <tr><td></td><td></td><td><b>TOTAL:</b></td><td>`+total.toFixed(1)+`</td></tr></table><br>
       <div class='pie'>GRACIAS POR SU COMPRA, BUEN PROVECHO</div>`
-      
-
      }
      document.getElementById('myelement').innerHTML = cadena
       const d = new Printd()
