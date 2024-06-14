@@ -196,6 +196,34 @@ class SaleController extends Controller{
         }
         return $insumos;
     }
+    public function reportPago(Request $request){
+        $date = $request->date;
+        $pagos= ['EFECTIVO','TARGETA','ONLINE','QR','INGRESO','EGRESO'];
+        $pagosArray = [];
+        foreach ($pagos as $pago) {
+            $total = 0;
+            if ($pago == 'INGRESO'){
+                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->sum('total');
+                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->get();
+            }
+            else if ($pago == 'EGRESO'){
+                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->sum('total');
+                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->get();
+            }else if ($pago == 'EFECTIVO' || $pago == 'TARGETA' || $pago == 'ONLINE' || $pago == 'QR'){
+                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
+                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->get();
+            }
+            if ($total > 0){
+                $pagoArray = [
+                    'pago' => $pago,
+                    'total' => $total,
+                    'details' => $details
+                ];
+                array_push($pagosArray, $pagoArray);
+            }
+        }
+        return $pagosArray;
+    }
 //    public function update(Request $request, $id){
 //        $sale = Sale::findOrFail($id);
 //        $sale->update($request->all());
