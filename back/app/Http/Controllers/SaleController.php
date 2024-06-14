@@ -80,6 +80,7 @@ class SaleController extends Controller{
         $sale->descripcion = $request->descripcion;
         $sale->type = 'EGRESO';
         $sale->save();
+        return Sale::with('client')->with('user')->findOrFail($sale->id);
     }
     public function store(Request $request){
         DB::beginTransaction();

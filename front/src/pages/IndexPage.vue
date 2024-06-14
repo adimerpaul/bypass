@@ -25,7 +25,7 @@
             <card2-component title="Utilidad" :subtitle="utilidad+' Bs.'" icon="trending_flat" color="blue"/>
           </div>
           <div class="col-12">
-            <q-markup-table dense wrap-cells>
+            <q-markup-table dense wrap-cells >
               <thead class="bg-black text-white">
               <tr>
                 <th>Opciones</th>
@@ -37,9 +37,10 @@
                 <th>Usuario</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody v-if="sales.length > 0">
               <tr v-for="sale in sales" :key="sale.id">
                 <td>
+                  {{sale.numero}}
                   <q-btn-dropdown label="Opciones" no-caps size="10px" dense :color="sale.type === 'EGRESO' ? 'red' : 'green'" auto-close
                                   v-if="sale.status !== 'ANULADO'">
                     <q-item clickable v-ripple @click="reimprimir(sale)">
@@ -72,6 +73,11 @@
                 <td>{{sale.user?.name}}</td>
               </tr>
               </tbody>
+              <tbody v-else>
+                <tr>
+                  <td colspan="7" class="text-center">No hay ventas</td>
+                </tr>
+              </tbody>
             </q-markup-table>
           </div>
 <!--          <div class="col-12">-->
@@ -100,7 +106,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <div id="myelement" ></div>
+    <div id="myelement" class="hidden" ></div>
   </q-page>
 </template>
 
@@ -108,6 +114,7 @@
 import moment from "moment";
 import Card2Component from "components/Card2Component.vue";
 import { Printd } from 'printd'
+import {Imprimir} from "src/addons/Imprimir";
 
 export default {
   name: 'IndexPage',
@@ -133,6 +140,7 @@ export default {
       this.loading = true;
       this.$axios.post('/egresos',this.egreso).then(response => {
         this.$alert.success('Egreso registrado');
+        Imprimir.recibo(response.data);
         this.salesGet();
         this.egresoDialog = false;
       }).catch(error => {
@@ -158,57 +166,7 @@ export default {
       };
     },
     reimprimir(sale) {
-      let cadena =''
-     if (sale.type=='INGRESO'){
-      console.log('reimprimir', sale);
-      let contenido=''
-      let total=0
-      sale.details.forEach(r => {
-        contenido+='<tr><td>'+r.quantity+'</td><td>'+r.product+'</td><td>'+r.price+'</td><td>'+r.subtotal+'</td></tr>'
-        total += parseFloat(r.subtotal)
-      });
-      cadena=`<style>
-      .imagen{
-        width:60%
-      }
-      .titulo1 {
-      text-align:center;
-      font-weight:bold;
-      font-size:12px;
-      }
-      .titulo2 {
-      text-align:center;
-      font-size:10px;
-      }
-      .tab1{
-      width:100%;
-      text-align:center;
-      font-size:10px;
-      }
-      .tab2{
-      width:100%;
-      font-size:10px;
-      border-collapse: collapse;
-      }
-      .tab2  th{
-      border: .1px solid;
-      }
-      .pie{
-      text-align:center;
-      font-size:8px;}
-      </style>
-      <div style='text-align:center'><img class='imagen' src="logo2.png"></div>
-      <div class='titulo1'>CONTACTOS: 76130006</div>
-      <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
-      <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
-      <table class='tab2'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>
-      `+contenido+`
-        <tr><td></td><td></td><td><b>TOTAL:</b></td><td>`+total.toFixed(1)+`</td></tr></table><br>
-      <div class='pie'>GRACIAS POR SU COMPRA, BUEN PROVECHO</div>`
-     }
-     document.getElementById('myelement').innerHTML = cadena
-      const d = new Printd()
-      d.print(document.getElementById('myelement'))
+      Imprimir.recibo(sale);
     },
     anular(sale) {
       this.$alert.confirm('¿Está seguro de anular la venta?').onOk(() => {

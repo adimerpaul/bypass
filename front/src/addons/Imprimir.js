@@ -390,6 +390,77 @@ Oruro</div>
     })
   }
 
+  static recibo (sale) {
+    console.log(sale);
+    let cadena =''
+    //padding: arriba derecha abajo izquierda
+    // if (sale.type=='INGRESO'){
+    const type = sale.type
+    let contenido=''
+    let total=0
+    let tabla=''
+    if(type=='INGRESO'){
+      tabla='<table class=\'tab2\'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>'
+      sale.details.forEach(r => {
+        contenido+='<tr><td>'+r.quantity+'</td><td>'+r.product+'</td><td>'+r.price+'</td><td>'+r.subtotal+'</td></tr>'
+        total += parseFloat(r.subtotal)
+      });
+      tabla+=contenido
+      tabla+=`<tr><td></td><td></td><td><b>TOTAL:</b></td><td>`+total.toFixed(2)+`</td></tr></table>`
+    }else{
+      tabla='<table class=\'tab2\'><tr><th>DESCRIPCION</th><th>PROVEEDOR</th><th>TOTAL</th></tr>'
+      contenido+='<tr><td>'+sale.descripcion+'</td><td>'+sale.client?.name+'</td><td>'+sale.total+'</td></tr>'
+      tabla+=contenido
+      tabla+=`<tr><td></td><td><b>TOTAL:</b></td><td>`+sale.total+`</td></tr></table>`
+    }
+    cadena=`<style>
+    .imagen{
+      width:60%
+    }
+    .titulo1 {
+    text-align:center;
+    font-weight:bold;
+    font-size:12px;
+    }
+    .titulo2 {
+    text-align:center;
+    font-size:10px;
+    }
+    .tab1{
+    width:100%;
+    text-align:center;
+    font-size:10px;
+    }
+    .tab2{
+    width:100%;
+    font-size:10px;
+    border-collapse: collapse;
+    }
+    .tab2  th{
+    border: .1px solid;
+    }
+    .pie{
+    text-align:center;
+    font-size:8px;}
+    </style>
+    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm">
+      <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
+      <div class='titulo1'>
+      ${type=='INGRESO'?'CONTACTOS: 76130006':'RECIBO DE EGRESO'}
+      </div>
+      <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
+      <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
+      ${tabla}
+      <div class='pie' style="text-align: right;font-weight: bold;font-size: 15px">TICKET ${sale.numero} ${sale.mesa} </div>
+      <div class='pie'>GRACIAS POR SU COMPRA, BUEN PROVECHO</div>
+      <div class='pie' style="text-align: left;font-weight: bold;">Usuario: ${sale.user?.name} </div>
+    </div>`
+    // }
+    document.getElementById('myelement').innerHTML = cadena
+    const d = new Printd()
+    d.print(document.getElementById('myelement'))
+  }
+
   static head () {
     return `<html>
 <style>
