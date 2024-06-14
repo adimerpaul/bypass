@@ -10,7 +10,7 @@
             <q-btn @click="diarioGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
           </div>
           <div class="col-12 col-md-2 text-center">
-            <q-btn @click="getSales" class="text-bold" label="Ingresos" color="green" icon="list" no-caps :loading="loading" />
+            <q-btn @click="getSales" class="text-bold" label="Reporte Venta" color="green" icon="print" no-caps :loading="loading" size="12px" />
           </div>
           <div class="col-12">
             <q-markup-table dense wrap-cells bordered>
@@ -90,15 +90,21 @@ export default {
   },
   methods: {
     getSales(){
-    
+      this.loading = true;
       this.$axios.post("reportSale" , {date: this.date}).then(res => {
-        if(res.data.length==0) return false
+        if(res.data.length==0){
+          this.$alert.error('No se encontraron ventas para el dia seleccionado')
+          return false
+        }
         let cadena=''
       let contenido=''
       let total=0
       moment.locale('es')
+      const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      const text= dias[moment(res.date).day()]+' '+moment(res.date).format("DD")+' de '+meses[moment(res.date).month()]+' de '+moment(res.date).format("YYYY")
       res.data.forEach(r => {
-        contenido+='<tr><td>'+r.time+'</td><td>'+r.name+'</td><td>'+r.total+'</td></tr>'
+        contenido+='<tr><td>'+r.time+'</td><td>'+r.pago+' N '+r.numero+'  '+r.mesa+'</td><td>'+r.total+'</td></tr>'
         total += parseFloat(r.total)
       });
       cadena=`<style>
@@ -127,27 +133,34 @@ export default {
       border-collapse: collapse;
       }
       .tab2  th{
-      border: .1px solid;
+      border: 1px solid;
       }
       .tab2 td{
-      text-align:center}
+      border: 1px solid grey;
+      text-align:left
+      }
       .pie{
       text-align:center;
       font-size:8px;}
       </style>
-      <table class=tab1><tr><td >SUCURSAL <br> ORURO</td><td>TOTAL VENDIDO</td></tr><tr><td></td><td style='font-size:18px;'>`+total.toFixed(1)+` Bs</td></tr></table>
+      <div style="">
+      <table class=tab1>
+        <tr><td class="fa-weight:bold">SUCURSAL <br> ORURO</td><td><div style="background: #778ea2">TOTAL VENDIDO</div></td></tr>
+        <tr><td></td><td style='font-size:18px;font-weight: bold'>${total.toFixed(2)} Bs</td></tr>
+        </table>
       <div class='titulo1'>REPORTE VENTA DEL DIA</div>
-      <div class='titulo2'>`+moment(this.fecha).format("dddd, DD  MMMM  YYYY")+`</div>
+      <div class='titulo2'>${text}</div>
       <table class='tab2'><tr><th>HORA</th><th>DETALLE</th><th>TOTAL</th></tr>
-      `+contenido+`      
-        </table><br>
+      ${contenido}
+      </table>
+    </div>
       `
-      
-
      document.getElementById('myelement').innerHTML = cadena
       const d = new Printd()
       d.print(document.getElementById('myelement'))
-      })
+      }).finally(() => {
+        this.loading = false;
+      });
 
     },
     update(diario) {
