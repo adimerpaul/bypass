@@ -74,7 +74,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::put('/deregistrationsAnular/{deregistration}', [\App\Http\Controllers\BuyController::class, 'deregistrationsAnular']);
 
     Route::post('/reportSale', [\App\Http\Controllers\SaleController::class, 'reportSale']);
-    
+    Route::post('/reportProduct', [\App\Http\Controllers\SaleController::class, 'reportProduct']);
+
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);

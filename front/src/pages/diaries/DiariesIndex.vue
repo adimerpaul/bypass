@@ -12,6 +12,9 @@
           <div class="col-12 col-md-2 text-center">
             <q-btn @click="getSales" class="text-bold" label="Reporte Venta" color="green" icon="print" no-caps :loading="loading" size="12px" />
           </div>
+          <div class="col-12 col-md-2 text-center">
+            <q-btn @click="reportProduct" class="text-bold" label="Reporte Product" color="indigo" icon="print" no-caps :loading="loading" size="12px" />
+          </div>
           <div class="col-12">
             <q-markup-table dense wrap-cells bordered>
               <thead>
@@ -89,6 +92,80 @@ export default {
     //this.getSales();
   },
   methods: {
+    reportProduct() {
+      this.loading = true;
+      this.$axios.post("reportProduct", {date: this.date}).then(res => {
+        if (res.data.length == 0) {
+          this.$alert.error('No se encontraron ventas para el dia seleccionado')
+          return false
+        }
+        let cadena = ''
+        let contenido = ''
+        let total = 0
+        moment.locale('es')
+        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const text = dias[moment(res.date).day()] + ' ' + moment(res.date).format("DD") + ' de ' + meses[moment(res.date).month()] + ' de ' + moment(res.date).format("YYYY")
+        res.data.forEach(r => {
+          contenido += '<tr><td>' + r.id + '</td><td>' + r.name + '</td><td>' + r.quantity + '</td></tr>'
+        });
+        cadena = `<style>
+      .imagen{
+        width:60%
+      }
+      .titulo1 {
+      text-align:center;
+      font-weight:bold;
+      font-size:12px;
+      }
+      .titulo2 {
+      text-align:center;
+      font-size:10px;
+      }
+      .tab1{
+      width:100%;
+      text-align:center;
+      font-size:10px;
+      border-collapse: collapse;
+      font-weight:bold;
+      }
+      .tab2{
+      width:100%;
+      font-size:10px;
+      border-collapse: collapse;
+      }
+      .tab2  th{
+      border: 1px solid;
+      }
+      .tab2 td{
+      border: 1px solid grey;
+      text-align:left
+      }
+      .pie{
+      text-align:center;
+      font-size:8px;}
+      </style>
+      <div style="padding: 0cm 0.3cm 0cm 0.3cm">
+      <div class='titulo1' style="font-weight: bold">VENTA POR PRODUCTO</div>
+      <div class='titulo2'>${text}</div>
+      <div class='titulo2'>TOTAL MERCADERIA VENDIDA</div>
+      <table class='tab2'>
+        <tr>
+          <th>ID</th>
+          <th>DETALLE</th>
+          <th>C</th>
+        </tr>
+      ${contenido}
+      </table>
+    </div>
+      `
+        document.getElementById('myelement').innerHTML = cadena
+        const d = new Printd()
+        d.print(document.getElementById('myelement'))
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
     getSales(){
       this.loading = true;
       this.$axios.post("reportSale" , {date: this.date}).then(res => {

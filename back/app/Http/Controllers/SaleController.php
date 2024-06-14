@@ -181,6 +181,21 @@ class SaleController extends Controller{
     public function reportSale(Request $request){
         return Sale::where('date',$request->date)->where('status','ACTIVO')->where('type','INGRESO')->get();
     }
+    public function reportProduct(Request $request){
+        $saleInsumos = InsumoSale::Select('insumo_id', DB::raw('SUM(quantity) as quantity'))
+            ->where('date',$request->date)
+            ->where('status','ACTIVE')
+            ->groupBy('insumo_id')
+            ->orderBy('quantity', 'desc')
+            ->get();
+        $insumos = [];
+        foreach ($saleInsumos as $saleInsumo) {
+            $insumo = Insumo::findOrFail($saleInsumo->insumo_id);
+            $insumo->quantity = $saleInsumo->quantity;
+            array_push($insumos, $insumo);
+        }
+        return $insumos;
+    }
 //    public function update(Request $request, $id){
 //        $sale = Sale::findOrFail($id);
 //        $sale->update($request->all());
