@@ -137,7 +137,7 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-  <div id="myElement" class="hidden"></div>
+  <div id="myelement" class="hidden" ></div>
 </template>
 <script>
 import ProductCard from "pages/products/ProductCard.vue";
@@ -176,7 +176,8 @@ export default {
         this.$store.orders = [];
         this.saleDialog = false;
         this.$alert.success('Venta realizada');
-        Imprimir.nota(response.data)
+        // Imprimir.nota(response.data)
+        Imprimir.recibo(response.data);
       }).catch(error => {
         this.$alert.error('Error al realizar la venta');
       }).finally(() => {
