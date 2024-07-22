@@ -316,7 +316,7 @@ export default {
         <tr>
           <th>ID</th>
           <th>DETALLE</th>
-          <th>C</th>
+          <th>COSTO</th>
         </tr>
       ${contenido}
       </table>
@@ -354,11 +354,11 @@ export default {
       .titulo1 {
       text-align:center;
       font-weight:bold;
-      font-size:12px;
+      font-size:14px;
       }
       .titulo2 {
       text-align:center;
-      font-size:10px;
+      font-size:12px;
       }
       .tab1{
       width:100%;
@@ -383,7 +383,7 @@ export default {
       text-align:center;
       font-size:8px;}
       </style>
-      <div style="">
+      <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm">
       <table class=tab1>
         <tr><td class="fa-weight:bold">SUCURSAL <br> ORURO</td><td><div style="background: #778ea2">TOTAL VENDIDO</div></td></tr>
         <tr><td></td><td style='font-size:18px;font-weight: bold'>${total.toFixed(2)} Bs</td></tr>

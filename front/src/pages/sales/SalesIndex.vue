@@ -126,7 +126,7 @@
             <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY']" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARGETA','ONLINE','QR','PEDIDOS YA']" />
+            <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARGETA','ONLINE','QR','DELIVERY']" />
           </div>
           <div class="col-12 col-md-12 flex flex-center">
             <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>

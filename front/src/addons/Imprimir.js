@@ -391,10 +391,7 @@ Oruro</div>
   }
 
   static recibo (sale) {
-    console.log(sale);
     let cadena =''
-    //padding: arriba derecha abajo izquierda
-    // if (sale.type=='INGRESO'){
     const type = sale.type
     let contenido=''
     let total=0
@@ -420,30 +417,37 @@ Oruro</div>
     .titulo1 {
     text-align:center;
     font-weight:bold;
-    font-size:12px;
+    font-size:14px;
     }
     .titulo2 {
     text-align:center;
-    font-size:10px;
+    font-weight:bold;
+    font-size:12px;
     }
     .tab1{
     width:100%;
     text-align:center;
-    font-size:10px;
+    font-weight:bold;
+    font-size:12px;
     }
     .tab2{
     width:100%;
-    font-size:10px;
+    font-size:12px;
     border-collapse: collapse;
     }
     .tab2  th{
     border: .1px solid;
     }
+    .numero{
+    text-align:right;
+    font-weight:bold;
+    font-size:30px;}
     .pie{
     text-align:center;
     font-size:8px;}
     </style>
     <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm">
+       ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero">'+sale.name+'</div>':''}
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
       ${type=='INGRESO'?'CONTACTOS: 76130006':'RECIBO DE EGRESO'}
@@ -451,15 +455,16 @@ Oruro</div>
       <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
       <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
       ${tabla}
-      <div class='pie' style="text-align: right;font-weight: bold;font-size: 15px">TICKET ${sale.numero} ${sale.mesa} </div>
-      <div class='pie'>GRACIAS POR SU COMPRA, BUEN PROVECHO</div>
+      ${type=='INGRESO'?'<div class="pie" style="text-align: right;font-weight: bold;font-size: 15px">TICKET '+ sale.numero +' ' +sale.mesa +"</div>":"<br>"}
+       ${type=='INGRESO'?'<div class="pie">GRACIAS POR SU COMPRA, BUEN PROVECHO</div>':''}
       <div class='pie' style="text-align: left;font-weight: bold;">Usuario: ${sale.user?.name} </div>
     </div>`
     // }
     document.getElementById('myelement').innerHTML = cadena
     const d = new Printd()
     d.print(document.getElementById('myelement'))
-  }
+  
+}
 
   static head () {
     return `<html>
