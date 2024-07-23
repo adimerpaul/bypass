@@ -103,6 +103,7 @@ class SaleController extends Controller{
             $sale->status = 'ACTIVO';
             $sale->mesa = $request->mesa;
             $sale->pago = $request->pago;
+            $sale->comment = $request->comment;
             $sale->numero = $this->numeroGenerate();
             $sale->save();
             foreach ($request->products as $product) {

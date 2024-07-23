@@ -399,7 +399,11 @@ Oruro</div>
     if(type=='INGRESO'){
       tabla='<table class=\'tab2\'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>'
       sale.details.forEach(r => {
-        contenido+='<tr><td>'+r.quantity+'</td><td>'+r.product+'</td><td>'+r.price+'</td><td>'+r.subtotal+'</td></tr>'
+        if(r.price==0){
+          contenido+='<tr><td></td><td>'+r.product+'</td><td></td><td></td></tr>'
+        }
+        else{
+        contenido+='<tr><td>'+r.quantity+'</td><td>'+r.product+'</td><td>'+r.price+'</td><td>'+r.subtotal+'</td></tr>'}
         total += parseFloat(r.subtotal)
       });
       tabla+=contenido
@@ -410,6 +414,9 @@ Oruro</div>
       tabla+=contenido
       tabla+=`<tr><td></td><td><b>TOTAL:</b></td><td>`+sale.total+`</td></tr></table>`
     }
+    let estilo=''
+    if(sale.mesa!='MESA')
+      estilo='font-size:25px; font-weight:bold;font-style: italic;'
     cadena=`<style>
     .imagen{
       width:60%
@@ -446,7 +453,7 @@ Oruro</div>
     text-align:center;
     font-size:8px;}
     </style>
-    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm">
+    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif;">
        ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero">'+sale.name+'</div>':''}
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
@@ -455,7 +462,7 @@ Oruro</div>
       <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
       <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
       ${tabla}
-      ${type=='INGRESO'?'<div class="pie" style="text-align: right;font-weight: bold;font-size: 15px">TICKET '+ sale.numero +' ' +sale.mesa +"</div>":"<br>"}
+      ${type=='INGRESO'?'<div class="pie" style="text-align: right;font-weight: bold;font-size: 15px">TICKET '+ sale.numero +' <span style="'+estilo+'">' +sale.mesa +"</span></div>":"<br>"}
        ${type=='INGRESO'?'<div class="pie">GRACIAS POR SU COMPRA, BUEN PROVECHO</div>':''}
       <div class='pie' style="text-align: left;font-weight: bold;">Usuario: ${sale.user?.name} </div>
     </div>`

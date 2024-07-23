@@ -123,7 +123,7 @@
             <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY']" />
+            <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY','']" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
             <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARGETA','ONLINE','QR']" />

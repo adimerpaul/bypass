@@ -18,6 +18,7 @@ return new class extends Migration
             $table->double('total', 8, 2);
             $table->text('name');
             $table->text('descripcion');
+            $table->text('comment')->nullable();
             $table->string('type')->default('INGRESO');
             $table->string('status')->default('ACTIVO');
 
