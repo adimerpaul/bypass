@@ -397,6 +397,7 @@ Oruro</div>
     let total=0
     let tabla=''
     if(type=='INGRESO'){
+      if(sale.comment==null) sale.comment=''
       tabla='<table class=\'tab2\'><tr><th>CANT</th><th>DETALLE</th><th>P/U</th><th>TOTAL</th></tr>'
       sale.details.forEach(r => {
         if(r.price==0){
@@ -463,6 +464,7 @@ Oruro</div>
       <table class='tab1'><tr><td>`+sale.date+`</td><td>`+sale.time+`</td></tr></table><br>
       ${tabla}
       ${type=='INGRESO'?'<div class="pie" style="text-align: right;font-weight: bold;font-size: 15px">TICKET '+ sale.numero +' <span style="'+estilo+'">' +sale.mesa +"</span></div>":"<br>"}
+       ${type=='INGRESO'?'<div>'+sale.comment+'</div>':''}
        ${type=='INGRESO'?'<div class="pie">GRACIAS POR SU COMPRA, BUEN PROVECHO</div>':''}
       <div class='pie' style="text-align: left;font-weight: bold;">Usuario: ${sale.user?.name} </div>
     </div>`

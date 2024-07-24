@@ -15,6 +15,11 @@ class ProductController extends Controller
         return Product::with(['category','insumos'])->get();
     }
 
+    public function listproducts()
+    {
+        return Product::where('status','ACTIVE')->with(['category','insumos'])->get();
+    }
+
     public function store(Request $request)
     {
         error_log(json_encode($request->user()->id));

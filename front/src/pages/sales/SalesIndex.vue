@@ -123,10 +123,13 @@
             <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY','']" />
+            <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY','PEDIDOS YA']" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARGETA','ONLINE','QR']" />
+            <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARJETA','ONLINE','QR']" />
+          </div>
+          <div class="col-12 col-md-12 q-pa-xs">
+            <q-input v-model="client.commet" label="Comentario" outlined dense  />
           </div>
           <div class="col-12 col-md-12 flex flex-center">
             <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>
@@ -172,6 +175,7 @@ export default {
         products: this.$store.orders,
         mesa: this.client.mesa,
         pago: this.client.pago,
+        comment: this.client.comment,
       }).then(response => {
         this.$store.orders = [];
         this.saleDialog = false;
@@ -242,7 +246,7 @@ export default {
     },
     getProducts() {
       this.loading = true;
-      this.$axios.get('products').then(response => {
+      this.$axios.get('listproducts').then(response => {
         this.products = response.data;
         this.productsAll = response.data;
       }).finally(() => {
