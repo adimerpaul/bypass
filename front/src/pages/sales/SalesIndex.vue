@@ -129,7 +129,7 @@
             <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARJETA','ONLINE','QR']" />
           </div>
           <div class="col-12 col-md-12 q-pa-xs">
-            <q-input v-model="client.commet" label="Comentario" outlined dense  />
+            <q-input v-model="client.comment" label="Comentario" outlined dense  />
           </div>
           <div class="col-12 col-md-12 flex flex-center">
             <q-btn color="red-8" label="Pagar" dense no-caps class="text-bold full-width"   icon="shopping_cart" @click="salePost" :loading="loading"/>

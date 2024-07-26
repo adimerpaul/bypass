@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller{
+
     public function index(Request $request){
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
@@ -20,6 +21,28 @@ class SaleController extends Controller{
             ->orderBy('id', 'desc')->get();
         return $sales;
     }
+
+    public function reportGanancia(Request $request){
+        $pagos= ['EFECTIVO','TARJETA','ONLINE','QR'];
+        $pagosArray = [];
+        foreach ($pagos as $pago) {
+            $total = 0;
+             if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
+                $total = Sale::whereDate('date',$request->fechaInicio)
+                ->whereDate('date',$request->fechaFin)
+                ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
+            }
+            if ($total >= 0){
+                $pagoArray = [
+                    'pago' => $pago,
+                    'total' => $total
+                ];
+                array_push($pagosArray, $pagoArray);
+            }
+        }
+        return $pagosArray;
+    }
+
     public function upsertClient($ci, $name){
         $ci = $ci==null || $ci=='' ? 0 : $ci;
         $client = Client::where('cinit', $ci)->first();
@@ -182,7 +205,18 @@ class SaleController extends Controller{
     public function reportSale(Request $request){
         return Sale::where('date',$request->date)->where('status','ACTIVO')->where('type','INGRESO')->get();
     }
+
     public function reportProduct(Request $request){
+        $saleProduct = Detail::Select('product', DB::raw('SUM(quantity) as quantity'))
+            ->whereDate('created_at',$request->date)
+            ->where('status','ACTIVO')
+            ->groupBy('product')
+            ->get();
+
+        return $saleProduct;
+    }
+
+    public function reportInsumo(Request $request){
         $saleInsumos = InsumoSale::Select('insumo_id', DB::raw('SUM(quantity) as quantity'))
             ->where('date',$request->date)
             ->where('status','ACTIVE')
@@ -197,9 +231,10 @@ class SaleController extends Controller{
         }
         return $insumos;
     }
+
     public function reportPago(Request $request){
         $date = $request->date;
-        $pagos= ['EFECTIVO','TARGETA','ONLINE','QR','INGRESO','EGRESO'];
+        $pagos= ['EFECTIVO','TARJETA','ONLINE','QR','INGRESO','EGRESO'];
         $pagosArray = [];
         foreach ($pagos as $pago) {
             $total = 0;
@@ -210,11 +245,11 @@ class SaleController extends Controller{
             else if ($pago == 'EGRESO'){
                 $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->sum('total');
                 $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->get();
-            }else if ($pago == 'EFECTIVO' || $pago == 'TARGETA' || $pago == 'ONLINE' || $pago == 'QR'){
+            }else if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
                 $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
                 $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->get();
             }
-            if ($total > 0){
+            if ($total >= 0){
                 $pagoArray = [
                     'pago' => $pago,
                     'total' => $total,

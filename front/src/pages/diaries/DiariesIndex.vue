@@ -3,26 +3,29 @@
     <q-card>
       <q-card-section class="q-pa-xs">
         <div class="row">
-          <div class="col-12 col-md-2">
+          <div class="col-xs-12 col-md-3">
             <q-input v-model="date" type="date" label="Fecha" outlined dense :loading="loading" />
           </div>
-          <div class="col-12 col-md-2 text-center">
+          <div class="col-xs-12 col-md-2 text-center">
             <q-btn @click="diarioGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
           </div>
-          <div class="col-12 col-md-2 text-center">
+          <div class="col-xs-12 col-md-2 text-center">
             <q-btn @click="getSales" class="text-bold" label="Reporte Venta" color="green" icon="print" no-caps :loading="loading" size="12px" />
           </div>
-          <div class="col-12 col-md-2 text-center">
-            <q-btn @click="reportProduct" class="text-bold" label="Reporte Product" color="indigo" icon="print" no-caps :loading="loading" size="12px" />
+          <div class="col-xs-12 col-md-2 text-center">
+            <q-btn @click="reportProduct" class="text-bold" label="Reporte Product" color="deep-purple" icon="print" no-caps :loading="loading" size="12px" />
           </div>
-          <div class="col-12 col-md-2 text-center">
+          <div class="col-xs-12 col-md-2 text-center">
+            <q-btn @click="reportInsumo" class="text-bold" label="Reporte Insumo" color="indigo" icon="print" no-caps :loading="loading" size="12px" />
+          </div>
+          <div class="col-xs-12 col-md-2 text-center">
             <q-btn @click="reportPago" class="text-bold" label="Reporte Pago" color="purple" icon="print" no-caps :loading="loading" size="12px" />
           </div>
 <!--          Arqueo caja-->
-          <div class="col-12 col-md-2 text-center">
+          <div class="col-xs-12 col-md-2 text-center">
             <q-btn @click="reportArqueo" class="text-bold" label="Reporte Arqueo" color="orange" icon="print" no-caps :loading="loading" size="12px" />
           </div>
-          <div class="col-12">
+          <div class="col-xs-12">
             <q-markup-table dense wrap-cells bordered>
               <thead>
               <tr>
@@ -258,6 +261,81 @@ export default {
     reportProduct() {
       this.loading = true;
       this.$axios.post("reportProduct", {date: this.date}).then(res => {
+        console.log(res.data)
+        if (res.data.length == 0) {
+          this.$alert.error('No se encontraron ventas para el dia seleccionado')
+          return false
+        }
+        let cadena = ''
+        let contenido = ''
+        let total = 0
+        moment.locale('es')
+        const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const text = dias[moment(res.date).day()] + ' ' + moment(res.date).format("DD") + ' de ' + meses[moment(res.date).month()] + ' de ' + moment(res.date).format("YYYY")
+        res.data.forEach(r => {
+          contenido += '<tr><td>' + r.product + '</td><td style="text-align: right">' + r.quantity + '</td></tr>'
+        });
+        cadena = `<style>
+      .imagen{
+        width:60%
+      }
+      .titulo1 {
+      text-align:center;
+      font-weight:bold;
+      font-size:12px;
+      }
+      .titulo2 {
+      text-align:center;
+      font-size:10px;
+      }
+      .tab1{
+      width:100%;
+      text-align:center;
+      font-size:10px;
+      border-collapse: collapse;
+      font-weight:bold;
+      }
+      .tab2{
+      width:100%;
+      font-size:10px;
+      border-collapse: collapse;
+      }
+      .tab2  th{
+      border: 1px solid;
+      }
+      .tab2 td{
+      border: 1px solid grey;
+      text-align:left
+      }
+      .pie{
+      text-align:center;
+      font-size:8px;}
+      </style>
+      <div style="padding: 0cm 0.3cm 0cm 0.3cm">
+      <div class='titulo1' style="font-weight: bold">VENTA POR PRODUCTO</div>
+      <div class='titulo2'>${text}</div>
+      <div class='titulo2'>TOTAL MERCADERIA VENDIDA</div>
+      <table class='tab2'>
+        <tr>
+          <th>DETALLE</th>
+          <th>TOTAL</th>
+        </tr>
+      ${contenido}
+      </table>
+    </div>
+      `
+        document.getElementById('myelement').innerHTML = cadena
+        const d = new Printd()
+        d.print(document.getElementById('myelement'))
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    reportInsumo() {
+      this.loading = true;
+      this.$axios.post("reportInsumo", {date: this.date}).then(res => {
+        console.log(res.data)
         if (res.data.length == 0) {
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
           return false
@@ -311,7 +389,7 @@ export default {
       <div style="padding: 0cm 0.3cm 0cm 0.3cm">
       <div class='titulo1' style="font-weight: bold">VENTA POR PRODUCTO</div>
       <div class='titulo2'>${text}</div>
-      <div class='titulo2'>TOTAL MERCADERIA VENDIDA</div>
+      <div class='titulo2'>TOTAL INSUMOS VENDIDA</div>
       <table class='tab2'>
         <tr>
           <th>ID</th>

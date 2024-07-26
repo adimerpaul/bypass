@@ -76,7 +76,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
     Route::post('/reportSale', [\App\Http\Controllers\SaleController::class, 'reportSale']);
     Route::post('/reportProduct', [\App\Http\Controllers\SaleController::class, 'reportProduct']);
+    Route::post('/reportInsumo', [\App\Http\Controllers\SaleController::class, 'reportInsumo']);
     Route::post('/reportPago', [\App\Http\Controllers\SaleController::class, 'reportPago']);
+    Route::post('/reportGanancia', [\App\Http\Controllers\SaleController::class, 'reportGanancia']);
 
 });
 

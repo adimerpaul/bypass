@@ -24,6 +24,22 @@
           <div class="col-12 col-md-4 q-pa-xs">
             <card2-component title="Utilidad" :subtitle="utilidad+' Bs.'" icon="trending_flat" color="blue"/>
           </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-md-3 q-pa-xs" >
+            <card2-component title="EFECTIVO" :subtitle="ganancia1.total+' Bs.'" icon="point_of_sale" color="amber" dense/>
+          </div>
+          <div class="col-xs-12 col-md-3 q-pa-xs" >
+            <card2-component title="TARJETA" :subtitle="ganancia2.total+' Bs.'" icon="credit_card" color="indigo"/>
+          </div>
+          <div class="col-xs-12 col-md-3 q-pa-xs" >
+            <card2-component title="ONLINE" :subtitle="ganancia3.total+' Bs.'" icon="shopping_cart" color="cyan"/>
+          </div>
+          <div class="col-xs-12 col-md-3 q-pa-xs" >
+            <card2-component title="QR" :subtitle="ganancia4.total+' Bs.'" icon="qr_code_scanner" color="deep-orange"/>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-12">
             <q-markup-table dense wrap-cells >
               <thead class="bg-black text-white">
@@ -126,6 +142,10 @@ export default {
       fechaInicio: moment().format('YYYY-MM-DD'),
       fechaFin: moment().format('YYYY-MM-DD'),
       sales: [],
+      ganancia1: {},
+      ganancia2: {},
+      ganancia3: {},
+      ganancia4: {},
       egresoDialog: false,
       egreso: {},
       provedores: []
@@ -190,6 +210,24 @@ export default {
         }
       }).then(response => {
         this.sales = response.data;
+        this.gananciaGet()
+      }).catch(error => {
+        console.error(error);
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+  gananciaGet() {
+      this.loading = true;
+      this.$axios.post('/reportGanancia', {
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin
+      }).then(response => {
+        console.log(response.data)
+        this.ganancia1 = response.data[0];
+        this.ganancia2 = response.data[1];
+        this.ganancia3 = response.data[2];
+        this.ganancia4 = response.data[3];
       }).catch(error => {
         console.error(error);
       }).finally(() => {
