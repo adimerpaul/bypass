@@ -274,7 +274,7 @@ export default {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const text = dias[moment(res.date).day()] + ' ' + moment(res.date).format("DD") + ' de ' + meses[moment(res.date).month()] + ' de ' + moment(res.date).format("YYYY")
         res.data.forEach(r => {
-          contenido += '<tr><td>' + r.product + '</td><td style="text-align: right">' + r.quantity + '</td></tr>'
+          contenido += '<tr><td>' + r.product + '</td><td>' + r.price + '</td><td style="text-align: right">' + r.quantity + '</td><td>'+(parseFloat(r.price) * parseFloat(r.quantity)).toFixed(2)+'</td></tr>'
         });
         cadena = `<style>
       .imagen{
@@ -319,6 +319,8 @@ export default {
       <table class='tab2'>
         <tr>
           <th>DETALLE</th>
+          <th>PU</th>
+          <th>CANT</th>
           <th>TOTAL</th>
         </tr>
       ${contenido}

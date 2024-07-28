@@ -28,8 +28,8 @@ class SaleController extends Controller{
         foreach ($pagos as $pago) {
             $total = 0;
              if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
-                $total = Sale::whereDate('date',$request->fechaInicio)
-                ->whereDate('date',$request->fechaFin)
+                $total = Sale::whereDate('date','>=',$request->fechaInicio)
+                ->whereDate('date','<=',$request->fechaFin)
                 ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
             }
             if ($total >= 0){
@@ -207,10 +207,10 @@ class SaleController extends Controller{
     }
 
     public function reportProduct(Request $request){
-        $saleProduct = Detail::Select('product', DB::raw('SUM(quantity) as quantity'))
+        $saleProduct = Detail::Select('product','price', DB::raw('SUM(quantity) as quantity'))
             ->whereDate('created_at',$request->date)
             ->where('status','ACTIVO')
-            ->groupBy('product')
+            ->groupBy('product','price')
             ->get();
 
         return $saleProduct;

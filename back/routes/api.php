@@ -80,6 +80,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/reportPago', [\App\Http\Controllers\SaleController::class, 'reportPago']);
     Route::post('/reportGanancia', [\App\Http\Controllers\SaleController::class, 'reportGanancia']);
 
+    Route::post('/caja', [\App\Http\Controllers\CajaController::class, 'store']);
+    Route::post('/totalCaja', [\App\Http\Controllers\CajaController::class, 'totalCaja']);
+
 });
 
 Route::get('/compromiso/{loan_id}', [\App\Http\Controllers\ReportController::class, 'compromiso']);

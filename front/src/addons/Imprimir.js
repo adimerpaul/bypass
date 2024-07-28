@@ -447,15 +447,15 @@ Oruro</div>
     border: .1px solid;
     }
     .numero{
-    text-align:right;
+    position:absolute; right:0px;
     font-weight:bold;
     font-size:30px;}
     .pie{
     text-align:center;
     font-size:8px;}
     </style>
-    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif;">
-       ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero">'+sale.name+'</div>':''}
+    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif; position:relative; margin-top:0">
+       ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero" style="">'+sale.name+'</div>':''}
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
       ${type=='INGRESO'?'CONTACTOS: 76130006':'RECIBO DE EGRESO'}
@@ -465,6 +465,8 @@ Oruro</div>
       ${tabla}
       ${type=='INGRESO'?'<div class="pie" style="text-align: right;font-weight: bold;font-size: 15px">TICKET '+ sale.numero +' <span style="'+estilo+'">' +sale.mesa +"</span></div>":"<br>"}
        ${type=='INGRESO'?'<div>'+sale.comment+'</div>':''}
+       ${type=='INGRESO'?'<div style="width:100%; height:80px; border: 1px solid;"></div>':''}
+
        ${type=='INGRESO'?'<div class="pie">GRACIAS POR SU COMPRA, BUEN PROVECHO</div>':''}
       <div class='pie' style="text-align: left;font-weight: bold;">Usuario: ${sale.user?.name} </div>
     </div>`

@@ -13,6 +13,7 @@
             <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
           </div>
           <div class="col-12 col-md-6 text-right">
+            <q-btn label="Caja Chica" color="indigo" @click="cajaClick"  :loading="loading" no-caps icon="attach_money" class="text-bold" />
             <q-btn label="Egreso" color="red" @click="egreseClick"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
@@ -22,7 +23,7 @@
             <card2-component title="Egresos" :subtitle="egresos+' Bs.'" icon="trending_down" color="red"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <card2-component title="Utilidad" :subtitle="utilidad+' Bs.'" icon="trending_flat" color="blue"/>
+            <card2-component title="Caja Chica" :subtitle="totalGasto+' Bs.'" icon="fa-solid fa-cash-register" color="blue"/>
           </div>
         </div>
         <div class="row">
@@ -122,6 +123,25 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="dialogCaja" persistent>
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Ingreso Caja Chica Dia</div>
+          <q-space />
+          <q-btn flat round dense icon="close" @click="dialogCaja = false" />
+        </q-card-section>
+        <q-card-section>
+          <q-form @submit="cajaPost">
+            <q-input v-model="chica.monto" label="Monto" type="number" outlined dense :rules="[val => !!val || 'Campo requerido']" step="0.01" />
+            <q-input v-model="chica.descripcion" label="Descripcion" type="text" outlined dense :rules="[val => !!val || 'Campo requerido']" />
+            <q-card-actions align="right">
+              <q-btn label="Cancelar" color="red" @click="dialogCaja = false" no-caps icon="close" :loading="loading"></q-btn>
+              <q-btn label="Guardar" color="green" type="submit" no-caps icon="save" :loading="loading"></q-btn>
+            </q-card-actions>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <div id="myelement" class="hidden" ></div>
   </q-page>
 </template>
@@ -138,6 +158,8 @@ export default {
   data () {
     return {
       loading: false,
+      caja:[],
+      dialogCaja:false,
       //principo de mes
       fechaInicio: moment().format('YYYY-MM-DD'),
       fechaFin: moment().format('YYYY-MM-DD'),
@@ -148,7 +170,8 @@ export default {
       ganancia4: {},
       egresoDialog: false,
       egreso: {},
-      provedores: []
+      provedores: [],
+      chica:{}
     }
   },
   mounted() {
@@ -156,6 +179,34 @@ export default {
     this.provedoresGet();
   },
   methods: {
+    cajaPost() {
+      this.loading = true;
+      this.$axios.post('/caja',this.chica).then(response => {
+        this.$alert.success('Caja  registrado');
+        this.getCaja();
+        this.dialogCaja = false;
+      }).catch(error => {
+        console.error(error);
+        this.$alert.error('Error al registrar');
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
+    cajaClick(){
+      this.dialogCaja=true
+      this.chica={}
+    },
+    getCaja(){
+      this.loading = true;
+      this.$axios.post('/totalCaja',{ini:this.fechaInicio,fin:this.fechaFin}).then(response => {
+        this.caja=response.data  
+      }).catch(error => {
+        console.error(error);
+        this.$alert.error('Error Caja');
+      }).finally(() => {
+        this.loading = false;
+      });
+    },
     egresoPost() {
       this.loading = true;
       this.$axios.post('/egresos',this.egreso).then(response => {
@@ -209,7 +260,7 @@ export default {
           fechaFin: this.fechaFin
         }
       }).then(response => {
-        this.sales = response.data;
+        this.sales = response.data
         this.gananciaGet()
       }).catch(error => {
         console.error(error);
@@ -224,10 +275,10 @@ export default {
           fechaFin: this.fechaFin
       }).then(response => {
         console.log(response.data)
-        this.ganancia1 = response.data[0];
-        this.ganancia2 = response.data[1];
-        this.ganancia3 = response.data[2];
-        this.ganancia4 = response.data[3];
+        this.ganancia1 = response.data[0]
+        this.ganancia2 = response.data[1]
+        this.ganancia3 = response.data[2]
+        this.ganancia4 = response.data[3]
       }).catch(error => {
         console.error(error);
       }).finally(() => {
@@ -250,8 +301,15 @@ export default {
       });
       return total;
     },
-    utilidad() {
-      return this.ingresos - this.egresos;
+    totalCaja(){
+      let total = 0;
+      this.caja.forEach(r => {
+        total = total + parseFloat(r.monto)
+      });
+      return total; 
+    },
+    totalGasto() {
+      return this.totalCaja - this.egresos;
     }
   }
 }
