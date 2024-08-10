@@ -447,7 +447,7 @@ Oruro</div>
     border: .1px solid;
     }
     .numero{
-    position:absolute; right:0px;
+    position:absolute; right:5px;
     font-weight:bold;
     font-size:30px;}
     .pie{
