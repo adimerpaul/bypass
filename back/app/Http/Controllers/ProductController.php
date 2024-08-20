@@ -17,7 +17,7 @@ class ProductController extends Controller
 
     public function listproducts()
     {
-        return Product::where('status','ACTIVE')->with(['category','insumos'])->get();
+        return Product::where('status','ACTIVE')->with(['category','insumos'])->orderBy('name','asc')->get();
     }
 
     public function store(Request $request)

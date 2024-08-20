@@ -203,12 +203,13 @@ class SaleController extends Controller{
     }
 
     public function reportSale(Request $request){
-        return Sale::where('date',$request->date)->where('status','ACTIVO')->where('type','INGRESO')->get();
+        return Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->get();
     }
 
     public function reportProduct(Request $request){
         $saleProduct = Detail::Select('product','price', DB::raw('SUM(quantity) as quantity'))
-            ->whereDate('created_at',$request->date)
+            ->whereDate('created_at','>=',$request->date)
+            ->whereDate('created_at','<=',$request->date2)
             ->where('status','ACTIVO')
             ->groupBy('product','price')
             ->get();
@@ -218,7 +219,8 @@ class SaleController extends Controller{
 
     public function reportInsumo(Request $request){
         $saleInsumos = InsumoSale::Select('insumo_id', DB::raw('SUM(quantity) as quantity'))
-            ->where('date',$request->date)
+            ->where('date','>=',$request->date)
+            ->where('date','<=',$request->date2)
             ->where('status','ACTIVE')
             ->groupBy('insumo_id')
             ->orderBy('quantity', 'desc')
@@ -239,15 +241,15 @@ class SaleController extends Controller{
         foreach ($pagos as $pago) {
             $total = 0;
             if ($pago == 'INGRESO'){
-                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->sum('total');
-                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->get();
+                $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->sum('total');
+                $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->get();
             }
             else if ($pago == 'EGRESO'){
-                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->sum('total');
-                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','EGRESO')->get();
+                $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','EGRESO')->sum('total');
+                $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','EGRESO')->get();
             }else if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
-                $total = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
-                $details = Sale::where('date',$date)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->get();
+                $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
+                $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->get();
             }
             if ($total >= 0){
                 $pagoArray = [

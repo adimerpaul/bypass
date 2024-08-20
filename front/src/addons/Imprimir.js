@@ -449,13 +449,20 @@ Oruro</div>
     .numero{
     position:absolute; right:5px;
     font-weight:bold;
-    font-size:30px;}
+    font-size:30px;
+    }
+    .textocab{
+    text-align:center;
+    font-weight:bold;
+    font-size:20px;
+    }
     .pie{
     text-align:center;
     font-size:8px;}
     </style>
     <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif; position:relative; margin-top:0">
        ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero" style="">'+sale.name+'</div>':''}
+       ${type=='INGRESO' && parseInt(sale.name) >0?'':'<div class="textocab" style="">'+sale.name+'</div>'}
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
       ${type=='INGRESO'?'CONTACTOS: 76130006':'RECIBO DE EGRESO'}
