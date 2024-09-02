@@ -18,7 +18,7 @@ class CajaController extends Controller
         //
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +34,7 @@ class CajaController extends Controller
     public function store(StoreCajaRequest $request)
     {
         //
-        DB::SELECT("UPDATE cajas set estado='INACTIVO' where fecha=".date('Y-m-d'));
+        DB::SELECT("UPDATE cajas set estado='INACTIVO' where fecha='".date('Y-m-d')."'");
         $caja=new Caja();
         $caja->fecha=date('Y-m-d');
         $caja->hora=date('H:i:s');
@@ -50,7 +50,7 @@ class CajaController extends Controller
     public function show($fecha)
     {
         //
-       
+
     }
 
     public function totalCaja(Request $request)
