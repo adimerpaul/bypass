@@ -127,6 +127,7 @@ class SaleController extends Controller{
             $sale->mesa = $request->mesa;
             $sale->pago = $request->pago;
             $sale->comment = $request->comment;
+            $sale->llamada = $request->llamada;
             $sale->numero = $this->numeroGenerate();
             $sale->save();
             foreach ($request->products as $product) {
