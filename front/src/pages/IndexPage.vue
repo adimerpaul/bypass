@@ -23,7 +23,8 @@
             <card2-component title="Egresos" :subtitle="egresos+' Bs.'" icon="trending_down" color="red"/>
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
-            <card2-component title="Caja Chica" :subtitle="totalGasto+' Bs.'" icon="fa-solid fa-cash-register" color="blue"/>
+            <card2-component title="Caja Chica" :subtitle="cajaChica?.monto+' Bs.'" icon="fa-solid fa-cash-register" color="blue"/>
+<!--            <pre>{{cajaChica}}</pre>-->
           </div>
         </div>
         <div class="row">
@@ -171,14 +172,26 @@ export default {
       egresoDialog: false,
       egreso: {},
       provedores: [],
-      chica:{}
+      chica:{},
+      cajaChica:{
+        monto:0
+      }
     }
   },
   mounted() {
     this.salesGet();
     this.provedoresGet();
+    this.ultimaCajaGet();
   },
   methods: {
+    ultimaCajaGet(){
+      this.$axios.get('/ultimaCaja').then(response => {
+        this.cajaChica=response.data
+      }).catch(error => {
+        console.error(error);
+        this.$alert.error('Error Caja');
+      })
+    },
     cajaPost() {
       this.loading = true;
       this.$axios.post('/caja',this.chica).then(response => {
@@ -212,7 +225,8 @@ export default {
       this.$axios.post('/egresos',this.egreso).then(response => {
         this.$alert.success('Egreso registrado');
         Imprimir.recibo(response.data);
-        this.salesGet();
+        // this.salesGet();
+        this.ultimaCajaGet();
         this.egresoDialog = false;
       }).catch(error => {
         console.error(error);

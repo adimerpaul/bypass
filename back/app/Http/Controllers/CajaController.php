@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Caja;
 use App\Http\Requests\StoreCajaRequest;
 use App\Http\Requests\UpdateCajaRequest;
+use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class CajaController extends Controller
-{
+class CajaController extends Controller{
+    function ultimaCaja(Request $request){
+        $caja= Caja::where('estado','ACTIVO')->where('fecha',date('Y-m-d'))->first();
+        $sumaGastos=Sale::where('date',date('Y-m-d'))->where('type','EGRESO')->sum('total');
+        if($caja){
+            return ['monto'=>$caja->monto-$sumaGastos];
+        }else{
+            return ['monto'=>0];
+        }
+    }
     /**
      * Display a listing of the resource.
      */
