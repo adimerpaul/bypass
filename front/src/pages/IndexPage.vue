@@ -196,7 +196,7 @@ export default {
       this.loading = true;
       this.$axios.post('/caja',this.chica).then(response => {
         this.$alert.success('Caja  registrado');
-        this.getCaja();
+        this.ultimaCajaGet();
         this.dialogCaja = false;
       }).catch(error => {
         console.error(error);

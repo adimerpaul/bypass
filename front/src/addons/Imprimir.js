@@ -408,12 +408,14 @@ Oruro</div>
         total += parseFloat(r.subtotal)
       });
       tabla+=contenido
-      tabla+=`<tr><td></td><td></td><td><b>TOTAL:</b></td><td>`+total.toFixed(2)+`</td></tr></table>`
+      tabla+=`<tr><td></td><td></td><td><b>TOTAL:</b></td><th>`+total.toFixed(2)+`</th></tr>
+      <tr><td></td><td></td><td><b>Pago:</b></td><th>${sale.pago}</th></tr>
+      </table>`
     }else{
       tabla='<table class=\'tab2\'><tr><th>DESCRIPCION</th><th>PROVEEDOR</th><th>TOTAL</th></tr>'
       contenido+='<tr><td>'+sale.descripcion+'</td><td>'+sale.client?.name+'</td><td>'+sale.total+'</td></tr>'
       tabla+=contenido
-      tabla+=`<tr><td></td><td><b>TOTAL:</b></td><td>`+sale.total+`</td></tr></table>`
+      tabla+=`<tr><td></td><td><b>TOTAL:</b></td><th>`+sale.total+`</th></tr></table>`
     }
     let estilo=''
     if(sale.mesa!='MESA')
@@ -447,22 +449,21 @@ Oruro</div>
     border: .1px solid;
     }
     .numero{
-    position:absolute; right:5px;
+    position:absolute; right:7px;
     font-weight:bold;
     font-size:30px;
     }
     .textocab{
     text-align:center;
-    font-weight:bold;
-    font-size:20px;
+    font-size:10px;
     }
     .pie{
     text-align:center;
     font-size:8px;}
     </style>
     <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif; position:relative; margin-top:0">
-       ${type=='INGRESO' && parseInt(sale.name) >0?'<div class="numero" style="">'+sale.name+'</div>':''}
-       ${type=='INGRESO' && parseInt(sale.name) >0?'':'<div class="textocab" style="">'+sale.name+'</div>'}
+       ${type=='INGRESO'?'<div class="numero" style=""><span class="textocab">'+sale.numero+'-</span>'+sale.llamada+'</div>':''}
+       ${type=='INGRESO' && sale.name != 'SN'?'<div class="textocab" style="">'+sale.name+'</div>':''}
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
       ${type=='INGRESO'?'CONTACTOS: 76130006':'RECIBO DE EGRESO'}

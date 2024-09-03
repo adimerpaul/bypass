@@ -89,7 +89,7 @@
     </q-card>
   </q-page>
   <q-dialog v-model="saleDialog" persistent>
-    <q-card style="width: 700px;max-width: 90vh">
+    <q-card style="width: 850px;max-width: 90vh">
       <q-card-section class="q-pa-xs row items-center">
         <div class="text-h6 text-bold">
           Pago
@@ -116,17 +116,54 @@
       </q-card-section>
       <q-card-section>
         <div class="row">
-          <div class="col-12 col-md-4 q-pa-xs">
+          <div class="col-12 col-md-2 q-pa-xs">
             <q-input v-model="client.ci" label="Numero" outlined dense clearable @update:modelValue="searchClient" debounce="300"/>
           </div>
-          <div class="col-12 col-md-4 q-pa-xs">
+          <div class="col-12 col-md-3 q-pa-xs">
             <q-input v-model="client.name" label="Nombre" outlined dense @update:modelValue="textUpperCase"/>
           </div>
-          <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.mesa" label="Nombre" outlined dense :options="['MESA','LLEVAR','DELIVERY','PEDIDOS YA']" />
+          <div class="col-12 col-md-2 q-pa-xs">
+            <q-select v-model="client.mesa" label="Mesa" outlined dense :options="['MESA','LLEVAR','DELIVERY','PEDIDOS YA']" />
           </div>
-          <div class="col-12 col-md-4 q-pa-xs">
-            <q-select v-model="client.pago" label="Nombre" outlined dense :options="['EFECTIVO','TARJETA','ONLINE','QR']" />
+          <div class="col-12 col-md-3 q-pa-xs">
+            <q-select v-model="client.pago" label="Pago" outlined dense :options="['EFECTIVO','TARJETA','ONLINE','QR']" />
+          </div>
+          <div class="col-12 col-md-2 q-pa-xs">
+            <q-select v-model="client.llamada" label="Llamada" outlined dense :options="cantidades" :rules="[val => val > 0 || 'Debe seleccionar una cantidad']"/>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <q-select v-model="cantidad" label="Cantidad" outlined dense :options="cantidades" />
+              </div>
+              <div class="col-3">
+                <q-select v-model="refrescoSelect" label="Refresco" outlined dense :options="refrescoSelects" >
+                  <template v-slot:after>
+                    <q-btn color="green" dense rounded icon="add" @click="colocarRefresco"/>
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-7">
+                <q-input v-model="refresco" label="Refresco" outlined dense clearable/>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2">
+                <q-select v-model="cantidad2" label="Cantidad" outlined dense :options="cantidades" />
+              </div>
+              <div class="col-3">
+                <q-select v-model="polloSelect" label="Pollo" outlined dense :options="pollosSelect" >
+                  <template v-slot:after>
+                    <q-btn color="green" dense rounded icon="add" @click="colocarPollo"/>
+                  </template>
+                </q-select>
+              </div>
+              <div class="col-7">
+                <q-input v-model="pollo" label="Pollo" outlined dense clearable/>
+              </div>
+            </div>
           </div>
           <div class="col-12 col-md-12 q-pa-xs">
             <q-input v-model="client.comment" label="Comentario" outlined dense  />
@@ -150,6 +187,15 @@ export default {
   components: {ProductCard},
   data() {
     return {
+      cantidad: 1,
+      cantidad2: 1,
+      refrescoSelect: '',
+      polloSelect: '',
+      pollosSelect: ['PIERNA', 'MUSLO', 'PECHUGA', 'ALA', 'otros'],
+      refresco: '',
+      pollo: '',
+      refrescoSelects: ['PEPSI', 'COCA COLA', 'FANTA', 'SPRITE', '7UP', 'MIRINDA', 'GUARANA', 'JUGO', 'AGUA' , 'otros'],
+      cantidades: [],
       search: '',
       products: [],
       categories: [],
@@ -164,18 +210,42 @@ export default {
     };
   },
   created() {
+    for (let i = 1; i <= 100; i++) {
+      this.cantidades.push(i);
+    }
     this.getProducts();
     this.getCategories();
   },
   methods: {
+    colocarPollo() {
+      if (this.pollo == null) {
+        this.pollo = '';
+      }
+      this.pollo = this.pollo + ' ' + this.cantidad + ' ' + this.polloSelect + ',';
+      this.pollo = this.pollo.trim();
+    },
+    colocarRefresco() {
+      if (this.refresco == null) {
+        this.refresco = '';
+      }
+      this.refresco = this.refresco + ' ' + this.cantidad + ' ' + this.refrescoSelect + ',';
+      this.refresco = this.refresco.trim();
+      // this.refresco = this.refresco.slice(0, -1);
+    },
     salePost() {
+      if (this.client.llamada == 0 || this.client.llamada == null || this.client.llamada == '') {
+        this.$alert.error('Debe seleccionar una cantidad en llamada');
+        return false;
+      }
+
       this.loading = true;
       this.$axios.post('sales', {
         client: this.client,
         products: this.$store.orders,
         mesa: this.client.mesa,
+        llamada: this.client.llamada,
         pago: this.client.pago,
-        comment: this.client.comment,
+        comment: (this.client.comment==undefined?'': this.client?.comment) +(this.refresco != '' ? ' Refresco: '+this.refresco : '') + (this.pollo != '' ? ' Pollo: '+this.pollo : '')
       }).then(response => {
         this.$store.orders = [];
         this.saleDialog = false;
@@ -210,6 +280,10 @@ export default {
       }
       this.recibido = '';
       this.saleDialog = true;
+      this.cantidad=1;
+      this.cantidad1=1;
+      this.refresco = '';
+      this.pollo = '';
       this.client = {
         ci: 0,
         name: 'SN',
