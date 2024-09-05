@@ -82,7 +82,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/reportGanancia', [\App\Http\Controllers\SaleController::class, 'reportGanancia']);
 
     Route::post('/caja', [\App\Http\Controllers\CajaController::class, 'store']);
-    Route::get('/ultimaCaja', [\App\Http\Controllers\CajaController::class, 'ultimaCaja']);
+    Route::post('/ultimaCaja', [\App\Http\Controllers\CajaController::class, 'ultimaCaja']);
     Route::post('/totalCaja', [\App\Http\Controllers\CajaController::class, 'totalCaja']);
 
 });

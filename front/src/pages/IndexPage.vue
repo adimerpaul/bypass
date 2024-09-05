@@ -253,7 +253,7 @@ export default {
      
       </div>
       <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
-      <table class='tab1'><tr><td>`+this.fechaInicio+`</td></tr></table><br>
+      <table class='tab1'><tr><td>`+this.fechaFin+`</td></tr></table><br>
       ${tabla}
   
     </div>`
@@ -264,7 +264,7 @@ export default {
 
     },
     ultimaCajaGet(){
-      this.$axios.get('/ultimaCaja').then(response => {
+      this.$axios.post('/ultimaCaja',{fecha:this.fechaFin}).then(response => {
         this.cajaChica=response.data
       }).catch(error => {
         console.error(error);
@@ -360,6 +360,7 @@ export default {
             this.detalleGasto.push(r)
         });
         this.gananciaGet()
+        this.ultimaCajaGet()
       }).catch(error => {
         console.error(error);
       }).finally(() => {

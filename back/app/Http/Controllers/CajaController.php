@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 
 class CajaController extends Controller{
     function ultimaCaja(Request $request){
-        $caja= Caja::where('estado','ACTIVO')->where('fecha',date('Y-m-d'))->first();
-        $sumaGastos=Sale::where('date',date('Y-m-d'))->where('type','EGRESO')->sum('total');
+        $caja= Caja::where('estado','ACTIVO')->where('fecha',$request->fecha)->first();
+        $sumaGastos=Sale::where('date',$request->fecha)->where('type','EGRESO')->sum('total');
         if($caja){
             return ['monto'=>$caja->monto-$sumaGastos];
         }else{
