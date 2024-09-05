@@ -337,7 +337,7 @@ export default {
       }
     },
     insumosGet(){
-      this.$axios.get('insumos').then(response => {
+      this.$axios.get('listInsumo').then(response => {
         this.insumos = response.data
         this.insumosAll = response.data
       })

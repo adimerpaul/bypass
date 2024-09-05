@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::put('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'update']);
     Route::delete('/insumos/{insumo}', [\App\Http\Controllers\InsumoController::class, 'destroy']);
     Route::put('/insumosStock/{insumo}', [\App\Http\Controllers\InsumoController::class, 'insumosStock']);
+    Route::get('/listInsumo', [\App\Http\Controllers\InsumoController::class, 'listInsumo']);
 
 //    category_insumos
     Route::get('/category_insumos', [\App\Http\Controllers\CategoryInsumoController::class, 'index']);

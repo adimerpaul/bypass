@@ -15,6 +15,7 @@
           <div class="col-12 col-md-6 text-right">
             <q-btn label="Caja Chica" color="indigo" @click="cajaClick"  :loading="loading" no-caps icon="attach_money" class="text-bold" />
             <q-btn label="Egreso" color="red" @click="egreseClick"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
+            <q-btn color="info" @click="printCajaClick"  :loading="loading" no-caps icon="print" class="text-bold" />
           </div>
           <div class="col-12 col-md-4 q-pa-xs">
             <card2-component title="Ingresos" :subtitle="ingresos+' Bs.'" icon="trending_up" color="green"/>
@@ -173,6 +174,7 @@ export default {
       egreso: {},
       provedores: [],
       chica:{},
+      detalleGasto:[],
       cajaChica:{
         monto:0
       }
@@ -184,6 +186,83 @@ export default {
     this.ultimaCajaGet();
   },
   methods: {
+    printCajaClick(){
+      if(this.cajaChica?.monto ==0){
+        this.$alert.error('Debe registrar Caja Chica');
+        return false
+      }
+      let cadena =''
+    let tabla=''
+    let contenido=''
+      
+      tabla='<table class=\'tab2\'><tr><th>DESCRIPCION</th><th>PROVEEDOR</th><th>TOTAL</th></tr>'
+      this.detalleGasto.forEach(r => {
+          contenido+='<tr><td>'+r.descripcion+'</td><td>'+r.name+'</td><td>'+r.total+'</td></tr>'
+      });
+      tabla+=contenido
+      tabla+=`<tr><td></td><td><b>TOTAL GASTOS:</b></td><th>`+this.egresos+`</th></tr>
+      <tr><td></td><td><b>Caja Chica:</b></td><th>`+(parseFloat(this.cajaChica.monto) + parseFloat(this.egresos))+`</th></tr>
+      <tr><td></td><td><b>Saldo:</b></td><th>`+this.cajaChica.monto  +`</th></tr>
+      </table>`
+
+    cadena=`<style>
+    .imagen{
+      width:60%
+    }
+    .titulo1 {
+    text-align:center;
+    font-weight:bold;
+    font-size:14px;
+    }
+    .titulo2 {
+    text-align:center;
+    font-weight:bold;
+    font-size:12px;
+    }
+    .tab1{
+    width:100%;
+    text-align:center;
+    font-weight:bold;
+    font-size:12px;
+    }
+    .tab2{
+    width:100%;
+    font-size:12px;
+    border-collapse: collapse;
+    }
+    .tab2  th{
+    border: .1px solid;
+    }
+    .numero{
+    position:absolute; right:7px;
+    font-weight:bold;
+    font-size:30px;
+    }
+    .textocab{
+    text-align:center;
+    font-size:10px;
+    }
+    .pie{
+    text-align:center;
+    font-size:8px;}
+    </style>
+    <div style="padding: 0.0cm 0.3cm 0.0cm 0.3cm;  font-family:Verdana, sans-serif; position:relative; margin-top:0">
+
+      <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
+      <div class='titulo1'>
+     
+      </div>
+      <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
+      <table class='tab1'><tr><td>`+this.fechaInicio+`</td></tr></table><br>
+      ${tabla}
+  
+    </div>`
+    // }
+    document.getElementById('myelement').innerHTML = cadena
+    const d = new Printd()
+    d.print(document.getElementById('myelement'))
+
+    },
     ultimaCajaGet(){
       this.$axios.get('/ultimaCaja').then(response => {
         this.cajaChica=response.data
@@ -274,7 +353,12 @@ export default {
           fechaFin: this.fechaFin
         }
       }).then(response => {
+        this.detalleGasto=[]
         this.sales = response.data
+        this.sales.forEach(r => {
+          if (r.type === 'EGRESO' && r.status !== 'ANULADO') 
+            this.detalleGasto.push(r)
+        });
         this.gananciaGet()
       }).catch(error => {
         console.error(error);
@@ -311,7 +395,8 @@ export default {
     egresos() {
       let total = 0;
       this.sales.forEach(sale => {
-        if (sale.type === 'EGRESO' && sale.status !== 'ANULADO') total += sale.total;
+        if (sale.type === 'EGRESO' && sale.status !== 'ANULADO') 
+        total += sale.total;
       });
       return total;
     },

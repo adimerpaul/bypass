@@ -34,6 +34,11 @@ class InsumoController extends Controller{
     function index(){
         return Insumo::orderBy('id', 'desc')->with('categoryInsumo')->get();
     }
+
+    function listInsumo(){
+        return Insumo::where('status','ACTIVE')->orderBy('id', 'desc')->with('categoryInsumo')->get();
+    }
+
     function store(Request $request){
         $insumo = new Insumo();
         $insumo->name = $request->name;
