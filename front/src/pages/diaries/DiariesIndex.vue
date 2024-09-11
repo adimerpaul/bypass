@@ -177,6 +177,9 @@ export default {
       <div class='titulo2' style="font-weight: bold">${text2}</div>
       <div class='titulo2'>EXPRESADO BOLIVIANOS</div>
       ${contenido}
+      <br>
+      <br>
+      <hr>
     </div>
       `
         document.getElementById('myelement').innerHTML = cadena

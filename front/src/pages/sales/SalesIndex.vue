@@ -233,10 +233,10 @@ export default {
       // this.refresco = this.refresco.slice(0, -1);
     },
     salePost() {
-      if (this.client.llamada == 0 || this.client.llamada == null || this.client.llamada == '') {
+      /*if (this.client.llamada == 0 || this.client.llamada == null || this.client.llamada == '') {
         this.$alert.error('Debe seleccionar una cantidad en llamada');
         return false;
-      }
+      }*/
 
       this.loading = true;
       this.$axios.post('sales', {
