@@ -9,6 +9,9 @@
           <div class="col-xs-12 col-md-3">
             <q-input v-model="date2" type="date" label="Fecha Fin" outlined dense :loading="loading" />
           </div>
+          <div class="col-xs-12 col-md-3">
+            <q-select v-model="user" :options="usuarios" label="Usuarios" outlined dense option-label="name" />
+          </div>
           <div class="col-xs-12 col-md-2 text-center">
             <q-btn @click="diarioGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
           </div>
@@ -98,17 +101,30 @@ export default {
       date: moment().format("YYYY-MM-DD"),
       date2: moment().format("YYYY-MM-DD"),
       diario: {},
-      loading: false
+      loading: false,
+      user:{'id':0,'name':'TODOS'},
+      usuarios:[]
     };
   },
   mounted() {
     this.diarioGet();
+    this.getUser()
     //this.getSales();
   },
   methods: {
+    getUser(){
+      this.$axios.get("listUser").then(res => {
+        this.usuarios=[{'id':0,'name':'TODOS'}]
+        res.data.forEach(r => {
+          this.usuarios.push(r)
+        });
+        console.log(this.usuarios)
+      })
+
+    },
     reportArqueo(){
       this.loading = true;
-      this.$axios.post("reportPago", {date: this.date,date2: this.date2}).then(res => {
+      this.$axios.post("reportPago", {date: this.date,date2: this.date2,user_id:this.user.id}).then(res => {
         if (res.data.length == 0) {
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
           return false
@@ -120,6 +136,7 @@ export default {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const text= dias[moment(this.date).day()]+' '+moment(this.date).format("DD")+' de '+meses[moment(this.date).month()]+' de '+moment(this.date).format("YYYY")
         const text2= dias[moment(this.date2).day()]+' '+moment(this.date2).format("DD")+' de '+meses[moment(this.date2).month()]+' de '+moment(this.date2).format("YYYY")
+        const text3=this.user.id==0?'':this.user.name
         res.data.forEach(p => {
           let detail = ''
           let total = 0
@@ -175,6 +192,7 @@ export default {
       <div class='titulo1' style="font-weight: bold">ARQUEO DE CAJA</div>
       <div class='titulo2' style="font-weight: bold">${text}</div>
       <div class='titulo2' style="font-weight: bold">${text2}</div>
+      <div class='titulo2' style="font-weight: bold">${text3}</div>
       <div class='titulo2'>EXPRESADO BOLIVIANOS</div>
       ${contenido}
       <br>
@@ -191,7 +209,7 @@ export default {
     },
     reportPago(){
       this.loading = true;
-      this.$axios.post("reportPago", {date: this.date, date2: this.date2}).then(res => {
+      this.$axios.post("reportPago", {date: this.date, date2: this.date2,user_id:this.user.id}).then(res => {
         if (res.data.length == 0) {
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
           return false
@@ -203,6 +221,7 @@ export default {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const text= dias[moment(this.date).day()]+' '+moment(this.date).format("DD")+' de '+meses[moment(this.date).month()]+' de '+moment(this.date).format("YYYY")
         const text2= dias[moment(this.date2).day()]+' '+moment(this.date2).format("DD")+' de '+meses[moment(this.date2).month()]+' de '+moment(this.date2).format("YYYY")
+        const text3=this.user.id==0?'':this.user.name
         res.data.forEach(p => {
           let detail = ''
           let total = 0
@@ -258,6 +277,7 @@ export default {
       <div class='titulo1' style="font-weight: bold">REPORTE POR TIPO DE TRANSACCION</div>
       <div class='titulo2' style="font-weight: bold">${text}</div>
       <div class='titulo2' style="font-weight: bold">${text2}</div>
+      <div class='titulo2' style="font-weight: bold">${text3}</div>
       <div class='titulo2'>EXPRESADO BOLIVIANOS</div>
       ${contenido}
     </div>
@@ -271,7 +291,7 @@ export default {
     },
     reportProduct() {
       this.loading = true;
-      this.$axios.post("reportProduct", {date: this.date,date2: this.date2}).then(res => {
+      this.$axios.post("reportProduct", {date: this.date,date2: this.date2,user_id:this.user.id}).then(res => {
         console.log(res.data)
         if (res.data.length == 0) {
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
@@ -285,7 +305,8 @@ export default {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const text= dias[moment(this.date).day()]+' '+moment(this.date).format("DD")+' de '+meses[moment(this.date).month()]+' de '+moment(this.date).format("YYYY")
         const text2= dias[moment(this.date2).day()]+' '+moment(this.date2).format("DD")+' de '+meses[moment(this.date2).month()]+' de '+moment(this.date2).format("YYYY")
-          res.data.forEach(r => {
+        const text3=this.user.id==0?'':this.user.name
+        res.data.forEach(r => {
           contenido += '<tr><td>' + r.product + '</td><td>' + r.price + '</td><td style="text-align: right">' + r.quantity + '</td><td>'+(parseFloat(r.price) * parseFloat(r.quantity)).toFixed(2)+'</td></tr>'
         });
         cadena = `<style>
@@ -328,6 +349,7 @@ export default {
       <div class='titulo1' style="font-weight: bold">VENTA POR PRODUCTO</div>
       <div class='titulo2'>${text}</div>
       <div class='titulo2'>${text2}</div>
+      <div class='titulo2' style="font-weight: bold">${text3}</div>
       <div class='titulo2'>TOTAL MERCADERIA VENDIDA</div>
       <table class='tab2'>
         <tr>
@@ -349,7 +371,7 @@ export default {
     },
     reportInsumo() {
       this.loading = true;
-      this.$axios.post("reportInsumo", {date: this.date,date2: this.date2}).then(res => {
+      this.$axios.post("reportInsumo", {date: this.date,date2: this.date2,user_id:this.user.id}).then(res => {
         console.log(res.data)
         if (res.data.length == 0) {
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
@@ -363,6 +385,7 @@ export default {
         const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         const text= dias[moment(this.date).day()]+' '+moment(this.date).format("DD")+' de '+meses[moment(this.date).month()]+' de '+moment(this.date).format("YYYY")
       const text2= dias[moment(this.date2).day()]+' '+moment(this.date2).format("DD")+' de '+meses[moment(this.date2).month()]+' de '+moment(this.date2).format("YYYY")
+        const text3=this.user.id==0?'':this.user.name
         res.data.forEach(r => {
           contenido += '<tr><td>' + r.id + '</td><td>' + r.name + '</td><td style="text-align: right">' + r.quantity + '</td></tr>'
         });
@@ -406,6 +429,7 @@ export default {
       <div class='titulo1' style="font-weight: bold">VENTA POR PRODUCTO</div>
       <div class='titulo2'>${text}</div>
       <div class='titulo2'>${text2}</div>
+      <div class='titulo2' style="font-weight: bold">${text3}</div>
       <div class='titulo2'>TOTAL INSUMOS VENDIDA</div>
       <table class='tab2'>
         <tr>
@@ -426,7 +450,7 @@ export default {
     },
     getSales(){
       this.loading = true;
-      this.$axios.post("reportSale" , {date: this.date,date2: this.date2}).then(res => {
+      this.$axios.post("reportSale" , {date: this.date,date2: this.date2,user_id:this.user.id}).then(res => {
         if(res.data.length==0){
           this.$alert.error('No se encontraron ventas para el dia seleccionado')
           return false
@@ -439,7 +463,8 @@ export default {
       const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       const text= dias[moment(this.date).day()]+' '+moment(this.date).format("DD")+' de '+meses[moment(this.date).month()]+' de '+moment(this.date).format("YYYY")
       const text2= dias[moment(this.date2).day()]+' '+moment(this.date2).format("DD")+' de '+meses[moment(this.date2).month()]+' de '+moment(this.date2).format("YYYY")
-      res.data.forEach(r => {
+        const text3=this.user.id==0?'':this.user.name
+        res.data.forEach(r => {
         contenido+='<tr><td>'+r.date+'</td><td>'+r.time+'</td><td>'+r.pago+' N '+r.numero+'  '+r.mesa+'</td><td style="text-align: right">'+r.total+'</td></tr>'
         total += parseFloat(r.total)
       });
@@ -487,6 +512,7 @@ export default {
       <div class='titulo1'>REPORTE VENTA DEL DIA</div>
       <div class='titulo2'>${text}</div>
       <div class='titulo2'>${text2}</div>
+      <div class='titulo2' style="font-weight: bold">${text3}</div>
       <table class='tab2'><tr><th>FECHA</th><th>HORA</th><th>DETALLE</th><th>TOTAL</th></tr>
       ${contenido}
       </table>

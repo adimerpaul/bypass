@@ -204,21 +204,36 @@ class SaleController extends Controller{
     }
 
     public function reportSale(Request $request){
-        return Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->get();
+        if($request->user_id==0)
+            return Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->get();
+        else
+            return Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('user_id',$request->user_id)->get();
     }
 
     public function reportProduct(Request $request){
+        if($request->user_id==0){
         $saleProduct = Detail::Select('product','price', DB::raw('SUM(quantity) as quantity'))
             ->whereDate('created_at','>=',$request->date)
             ->whereDate('created_at','<=',$request->date2)
             ->where('status','ACTIVO')
             ->groupBy('product','price')
             ->get();
+        }
+        else{
+            $saleProduct = Detail::Select('product','price', DB::raw('SUM(quantity) as quantity'))
+            ->whereDate('created_at','>=',$request->date)
+            ->whereDate('created_at','<=',$request->date2)
+            ->where('user_id',$request->user_id)
+            ->where('status','ACTIVO')
+            ->groupBy('product','price')
+            ->get();
+        }
 
         return $saleProduct;
     }
 
     public function reportInsumo(Request $request){
+        if($request->user_id==0){
         $saleInsumos = InsumoSale::Select('insumo_id', DB::raw('SUM(quantity) as quantity'))
             ->where('date','>=',$request->date)
             ->where('date','<=',$request->date2)
@@ -226,6 +241,17 @@ class SaleController extends Controller{
             ->groupBy('insumo_id')
             ->orderBy('quantity', 'desc')
             ->get();
+        }
+        else{
+            $saleInsumos = InsumoSale::Select('insumo_id', DB::raw('SUM(quantity) as quantity'))
+            ->where('date','>=',$request->date)
+            ->where('date','<=',$request->date2)
+            ->where('user_id',$request->user_id)
+            ->where('status','ACTIVE')
+            ->groupBy('insumo_id')
+            ->orderBy('quantity', 'desc')
+            ->get();
+        }
         $insumos = [];
         foreach ($saleInsumos as $saleInsumo) {
             $insumo = Insumo::findOrFail($saleInsumo->insumo_id);
@@ -241,6 +267,7 @@ class SaleController extends Controller{
         $pagosArray = [];
         foreach ($pagos as $pago) {
             $total = 0;
+            if($request->user_id==0){
             if ($pago == 'INGRESO'){
                 $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->sum('total');
                 $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->get();
@@ -251,6 +278,20 @@ class SaleController extends Controller{
             }else if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
                 $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
                 $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->get();
+            }
+            }
+            else{
+                if ($pago == 'INGRESO'){
+                    $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('user_id',$request->user_id)->sum('total');
+                    $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('user_id',$request->user_id)->get();
+                }
+                else if ($pago == 'EGRESO'){
+                    $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','EGRESO')->where('user_id',$request->user_id)->sum('total');
+                    $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','EGRESO')->where('user_id',$request->user_id)->get();
+                }else if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
+                    $total = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->where('user_id',$request->user_id)->sum('total');
+                    $details = Sale::where('date','>=',$request->date)->where('date','<=',$request->date2)->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->where('user_id',$request->user_id)->get();
+                }   
             }
             if ($total >= 0){
                 $pagoArray = [

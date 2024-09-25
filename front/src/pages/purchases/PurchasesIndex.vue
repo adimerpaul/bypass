@@ -218,7 +218,7 @@ export default {
     },
     insumosGet() {
       this.loading = true;
-      this.$axios.get('insumos').then(response => {
+      this.$axios.get('listInsumo').then(response => {
         this.insumos = response.data;
         this.insumosAll = response.data;
       }).finally(() => {

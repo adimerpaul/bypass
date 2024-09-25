@@ -36,6 +36,11 @@ class UserController extends Controller{
     public function index(){
         return User::orderBy('id', 'desc')->get();
     }
+
+    public function listUser(){
+        return User::where('role','VENDEDOR')->orderBy('id', 'desc')->get();
+
+    }
     public function store(Request $request){
         $validatedData = $request->validate([
             'name' => 'required',
