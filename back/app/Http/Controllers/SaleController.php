@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 class SaleController extends Controller{
 
     public function index(Request $request){
-        if($request->user()->role=='ADMIN')
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
         if($request->user()->role=='ADMIN')
