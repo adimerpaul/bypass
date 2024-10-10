@@ -15,16 +15,22 @@ use Illuminate\Support\Facades\DB;
 class SaleController extends Controller{
 
     public function index(Request $request){
+        if($request->user()->role=='ADMIN')
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
+        if($request->user()->role=='ADMIN')
         $sales = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
             ->orderBy('id', 'desc')->get();
+        else
+        $sales = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
+        ->orderBy('id', 'desc')->get();
         return $sales;
     }
 
     public function reportGanancia(Request $request){
         $pagos= ['EFECTIVO','TARJETA','ONLINE','QR'];
         $pagosArray = [];
+        if($request->user()->role=='ADMIN'){
         foreach ($pagos as $pago) {
             $total = 0;
              if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
@@ -38,6 +44,24 @@ class SaleController extends Controller{
                     'total' => $total
                 ];
                 array_push($pagosArray, $pagoArray);
+            }
+        }
+    }
+        else{
+            foreach ($pagos as $pago) {
+                $total = 0;
+                 if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
+                    $total = Sale::where('user_id',$request->user()->id)->whereDate('date','>=',$request->fechaInicio)
+                    ->whereDate('date','<=',$request->fechaFin)
+                    ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
+                }
+                if ($total >= 0){
+                    $pagoArray = [
+                        'pago' => $pago,
+                        'total' => $total
+                    ];
+                    array_push($pagosArray, $pagoArray);
+                }
             }
         }
         return $pagosArray;
