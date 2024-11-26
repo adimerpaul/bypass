@@ -43,7 +43,7 @@ class SaleController extends Controller{
                 $total = Sale::whereDate('date','>=',$request->fechaInicio)
                 ->whereDate('date','<=',$request->fechaFin)
                 ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago);
-                if($request->mesa !='TODO')
+                if($request->mesa !=='TODO')
                     $total->where('mesa',$request->mesa);
                 $total->sum('total');
             }
@@ -63,7 +63,7 @@ class SaleController extends Controller{
                     $total = Sale::where('user_id',$request->user()->id)->whereDate('date','>=',$request->fechaInicio)
                     ->whereDate('date','<=',$request->fechaFin)
                     ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago);
-                    if($request->mesa !='TODO')
+                    if($request->mesa !=='TODO')
                         $total->where('mesa',$request->mesa);
                     $total->sum('total');
                 }
