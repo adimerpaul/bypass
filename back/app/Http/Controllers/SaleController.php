@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\DB;
 class SaleController extends Controller{
 
     public function reportVenta(Request $request){
-        $fechaInicio = $request->input('fechaInicio');
-        $fechaFin = $request->input('fechaFin');
-        $mesa = $request->input('mesa');
+        $fechaInicio = $request->fechaInicio;
+        $fechaFin = $request->fechaFin;
+        $mesa = $request->mesa;
         if($request->user()->role=='ADMIN')
         $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
             ->orderBy('id', 'desc')->get();
