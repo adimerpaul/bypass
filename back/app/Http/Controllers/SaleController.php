@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class SaleController extends Controller{
 
-    public function index(Request $request){
+    public function reportVenta(Request $request){
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
         $mesa = $request->input('mesa');
