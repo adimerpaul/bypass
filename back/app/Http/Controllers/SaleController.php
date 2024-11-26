@@ -17,7 +17,7 @@ class SaleController extends Controller{
     public function index(Request $request){
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
-        $mesa = $request->mesa;
+        $mesa = $request->input('mesa');
         if($request->user()->role=='ADMIN')
         $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
             ->orderBy('id', 'desc')->get();
