@@ -28,8 +28,8 @@ class SaleController extends Controller{
             $salesQuery->where('mesa', $mesa);
         }
 
-        $sales = $salesQuery->orderBy('id', 'desc')->get();
-        return $sales;
+        return  $salesQuery->orderBy('id', 'desc')->get();
+        
 
     }
 
