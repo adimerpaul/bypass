@@ -17,13 +17,19 @@ class SaleController extends Controller{
     public function index(Request $request){
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
+        $mesa = $request->mesa;
         if($request->user()->role=='ADMIN')
-        $sales = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
+        $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
             ->orderBy('id', 'desc')->get();
         else
-        $sales = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
+        $salesQuery = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
         ->orderBy('id', 'desc')->get();
+        if ($mesa !== 'TODO') {
+            $salesQuery->where('mesa', $mesa);
+        }
+        $sales = $salesQuery->orderBy('id', 'desc')->get();
         return $sales;
+
     }
 
     public function reportGanancia(Request $request){

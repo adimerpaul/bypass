@@ -3,20 +3,29 @@
     <q-card>
       <q-card-section class="q-pa-xs">
         <div class="row">
-          <div class="col-12 col-md-2">
+          <div class="col-12 col-md-3 q-pa-xs">
             <q-input v-model="fechaInicio" label="Fecha Inicio" type="date" outlined dense />
           </div>
-          <div class="col-12 col-md-2">
+          <div class="col-12 col-md-3 q-pa-xs">
             <q-input v-model="fechaFin" label="Fecha Fin" type="date" outlined dense />
           </div>
-          <div class="col-12 col-md-2 text-center">
+          <div class="col-12 col-md-3 q-pa-xs">
+            <q-select v-model="mesa" label="Mesa" outlined dense :options="['TODO','MESA','LLEVAR','DELIVERY','PEDIDOS YA']" />
+          </div>
+          <div class="col-12 col-md-3 text-center">
             <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
           </div>
-          <div class="col-12 col-md-6 text-right">
+          <div class="col-12 col-md-4 text-right">
             <q-btn label="Caja Chica" color="indigo" @click="cajaClick"  :loading="loading" no-caps icon="attach_money" class="text-bold" />
+          </div>
+          <div class="col-12 col-md-4 text-right">
             <q-btn label="Egreso" color="red" @click="egreseClick"  :loading="loading" no-caps icon="add_circle_outline" class="text-bold" />
+          </div>
+          <div class="col-12 col-md-4 text-right">
             <q-btn color="info" @click="printCajaClick"  :loading="loading" no-caps icon="print" class="text-bold" />
           </div>
+          </div>
+          <div class="row">
           <div class="col-12 col-md-4 q-pa-xs">
             <card2-component title="Ingresos" :subtitle="ingresos+' Bs.'" icon="trending_up" color="green"/>
           </div>
@@ -159,6 +168,7 @@ export default {
   components: {Card2Component},
   data () {
     return {
+      mesa:'TODO',
       loading: false,
       caja:[],
       dialogCaja:false,
@@ -350,7 +360,8 @@ export default {
       this.$axios.get('/sales', {
         params: {
           fechaInicio: this.fechaInicio,
-          fechaFin: this.fechaFin
+          fechaFin: this.fechaFin,
+          mesa:this.mesa
         }
       }).then(response => {
         this.detalleGasto=[]
