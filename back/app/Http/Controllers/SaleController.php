@@ -36,38 +36,54 @@ class SaleController extends Controller{
     public function reportGanancia(Request $request){
         $pagos= ['EFECTIVO','TARJETA','ONLINE','QR'];
         $pagosArray = [];
-        if($request->user()->role=='ADMIN'){
-        foreach ($pagos as $pago) {
-            $total = 0;
-             if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
-                $total = Sale::whereDate('date','>=',$request->fechaInicio)
-                ->whereDate('date','<=',$request->fechaFin)
-                ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago);
-                if($request->mesa !=='TODO')
-                    $total->where('mesa',$request->mesa);
-                $total->sum('total');
-            }
-            if ($total >= 0){
-                $pagoArray = [
-                    'pago' => $pago,
-                    'total' => $total
-                ];
-                array_push($pagosArray, $pagoArray);
-            }
-        }
-    }
-        else{
+        if ($request->user()->role == 'ADMIN') {
             foreach ($pagos as $pago) {
                 $total = 0;
-                 if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
-                    $total = Sale::where('user_id',$request->user()->id)->whereDate('date','>=',$request->fechaInicio)
-                    ->whereDate('date','<=',$request->fechaFin)
-                    ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago);
-                    if($request->mesa !=='TODO')
-                        $total->where('mesa',$request->mesa);
-                    $total->sum('total');
+        
+                if (in_array($pago, ['EFECTIVO', 'TARJETA', 'ONLINE', 'QR'])) {
+                    $query = Sale::whereDate('date', '>=', $request->fechaInicio)
+                        ->whereDate('date', '<=', $request->fechaFin)
+                        ->where('status', 'ACTIVO')
+                        ->where('type', 'INGRESO')
+                        ->where('pago', $pago);
+        
+                    if ($request->mesa !== 'TODO') {
+                        $query->where('mesa', $request->mesa);
+                    }
+        
+                    // Asigna el resultado de sum() a $total
+                    $total = $query->sum('total');
                 }
-                if ($total >= 0){
+        
+                if ($total >= 0) {
+                    $pagoArray = [
+                        'pago' => $pago,
+                        'total' => $total
+                    ];
+                    array_push($pagosArray, $pagoArray);
+                }
+            }
+        } else {
+            foreach ($pagos as $pago) {
+                $total = 0;
+        
+                if (in_array($pago, ['EFECTIVO', 'TARJETA', 'ONLINE', 'QR'])) {
+                    $query = Sale::where('user_id', $request->user()->id)
+                        ->whereDate('date', '>=', $request->fechaInicio)
+                        ->whereDate('date', '<=', $request->fechaFin)
+                        ->where('status', 'ACTIVO')
+                        ->where('type', 'INGRESO')
+                        ->where('pago', $pago);
+        
+                    if ($request->mesa !== 'TODO') {
+                        $query->where('mesa', $request->mesa);
+                    }
+        
+                    // Asigna el resultado de sum() a $total
+                    $total = $query->sum('total');
+                }
+        
+                if ($total >= 0) {
                     $pagoArray = [
                         'pago' => $pago,
                         'total' => $total
@@ -76,6 +92,7 @@ class SaleController extends Controller{
                 }
             }
         }
+        
         return $pagosArray;
     }
 
