@@ -18,15 +18,18 @@ class SaleController extends Controller{
         $fechaInicio = $request->fechaInicio;
         $fechaFin = $request->fechaFin;
         $mesa = $request->mesa;
+
         if($request->user()->role=='ADMIN')
         $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
             ->orderBy('id', 'desc')->get();
         else
         $salesQuery = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
         ->orderBy('id', 'desc')->get();
+
         if ($mesa != 'TODO') {
-            $salesQuery->where('mesa', $mesa);
+            $salesQuery->where('mesa', $mesa)->get();
         }
+
         $sales = $salesQuery;
         return $sales;
 
