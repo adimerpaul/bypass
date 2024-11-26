@@ -20,11 +20,9 @@ class SaleController extends Controller{
         $mesa = $request->mesa;
 
         if($request->user()->role=='ADMIN')
-        $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
-            ->orderBy('id', 'desc');
+        $salesQuery = Sale::with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin]);
         else
-        $salesQuery = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin])
-        ->orderBy('id', 'desc');
+        $salesQuery = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin]);
 
         if ($mesa != 'TODO') {
             $salesQuery->where('mesa', $mesa);
