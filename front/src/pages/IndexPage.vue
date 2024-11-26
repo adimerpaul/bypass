@@ -168,7 +168,7 @@ export default {
   components: {Card2Component},
   data () {
     return {
-      mesa:'TODO',
+      mesa: 'TODO',
       loading: false,
       caja:[],
       dialogCaja:false,
@@ -380,7 +380,8 @@ export default {
       this.loading = true;
       this.$axios.post('/reportGanancia', {
           fechaInicio: this.fechaInicio,
-          fechaFin: this.fechaFin
+          fechaFin: this.fechaFin,
+          mesa:this.mesa
       }).then(response => {
         console.log(response.data)
         this.ganancia1 = response.data[0]
