@@ -27,10 +27,10 @@ class SaleController extends Controller{
         ->orderBy('id', 'desc')->get();
 
         if ($mesa != 'TODO') {
-            $salesQuery->where('mesa', $mesa)->get();
+            $salesQuery->where('mesa', $mesa);
         }
 
-        $sales = $salesQuery;
+        $sales = $salesQuery->get();
         return $sales;
 
     }
