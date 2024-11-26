@@ -62,7 +62,10 @@ class SaleController extends Controller{
                  if ($pago == 'EFECTIVO' || $pago == 'TARJETA' || $pago == 'ONLINE' || $pago == 'QR'){
                     $total = Sale::where('user_id',$request->user()->id)->whereDate('date','>=',$request->fechaInicio)
                     ->whereDate('date','<=',$request->fechaFin)
-                    ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago)->sum('total');
+                    ->where('status','ACTIVO')->where('type','INGRESO')->where('pago',$pago);
+                    if($request->mesa !='TODO')
+                        $total->where('mesa',$request->mesa);
+                    $total->sum('total');
                 }
                 if ($total >= 0){
                     $pagoArray = [
