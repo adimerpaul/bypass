@@ -358,11 +358,9 @@ export default {
     salesGet() {
       this.loading = true;
       this.$axios.post('/reportVenta', {
-        params: {
           fechaInicio: this.fechaInicio,
           fechaFin: this.fechaFin,
           mesa:this.mesa
-        }
       }).then(response => {
         this.detalleGasto=[]
         this.sales = response.data

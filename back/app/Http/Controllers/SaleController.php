@@ -24,7 +24,7 @@ class SaleController extends Controller{
         else
         $salesQuery = Sale::where('user_id',$request->user()->id)->with('client')->with('user')->with('details')->whereBetween('date', [$fechaInicio, $fechaFin]);
 
-        if ($mesa != 'TODO') {
+        if ($mesa !== 'TODO') {
             $salesQuery->where('mesa', $mesa);
         }
 
