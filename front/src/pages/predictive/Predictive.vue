@@ -2,17 +2,23 @@
   <q-page class="bg-grey-3 q-pa-xs">
     <q-card class="q-ma-md" flat bordered>
       <q-card-section>
-        <div class="text-h5 text-bold">Gráfico Predictivo</div>
+        <div class="text-h5 text-bold">Gráfico Predictivo de ventas</div>
         <div class="row">
           <q-input v-model="fecha_inicio" type="date" label="Fecha Inicio" dense outlined class="col" />
           <q-input v-model="fecha_fin" type="date" label="Fecha Fin" dense outlined class="col" />
           <q-btn label="Buscar" color="primary" @click="fetchChartData" no-caps icon="search" class="col-auto" />
         </div>
-        <apexchart
-          type="line"
-          :options="chartOptions"
-          :series="chartSeries"
-        />
+        <div class="row">
+          <div class="col-12 col-md-2"></div>
+          <div class="col-12 col-md-8">
+            <apexchart
+              type="line"
+              :options="chartOptions"
+              :series="chartSeries"
+            />
+          </div>
+          <div class="col-12 col-md-2"></div>
+        </div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -29,7 +35,8 @@ export default {
   },
   data() {
     return {
-      fecha_inicio: moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'),
+      // fecha_inicio: moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'),
+      fecha_inicio:'2024-09-30',
       fecha_fin: moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD'),
       // Opciones del gráfico
       chartOptions: {

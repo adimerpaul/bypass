@@ -57,13 +57,13 @@ def regresion_lineal():
         model.fit(X, y)
 
         # Predecir valores
-        df_weekly['predicted'] = model.predict(X)
+        df_weekly['predicted'] = model.predict(X).round(2)
 
         connection.close()
 
         result = {
-            "coeficiente": model.coef_[0],
-            "interseccion": model.intercept_,
+            "coeficiente": round(model.coef_[0], 2),
+            "interseccion": round(model.intercept_, 2),
             "predicciones": df_weekly.to_dict(orient="records")
         }
         return jsonify(result), 200
