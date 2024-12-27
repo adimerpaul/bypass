@@ -56,15 +56,31 @@ def regresion_lineal():
         model = LinearRegression()
         model.fit(X, y)
 
-        # Predecir valores
+        # Predecir valores existentes
         df_weekly['predicted'] = model.predict(X).round(2)
+
+        # Agregar 6 semanas adicionales para predicción futura
+        last_week = df_weekly['week'].max()
+        future_weeks = pd.DataFrame({
+            'weeks_since_start': range(df_weekly['weeks_since_start'].max() + 1, df_weekly['weeks_since_start'].max() + 7),
+            'week': [last_week + pd.Timedelta(weeks=i) for i in range(1, 7)],  # Generar 6 semanas futuras
+            'total_ventas': [None] * 6  # Inicializar con valores None
+        })
+        future_weeks['predicted'] = model.predict(future_weeks[['weeks_since_start']]).round(2)
+
+
+        # Combinar predicciones actuales y futuras
+        df_predictions = pd.concat([df_weekly, future_weeks]).reset_index(drop=True)
+
+        # Reemplazar valores NaN en la columna 'total_ventas' con 0
+        df_predictions['total_ventas'] = df_predictions['total_ventas'].fillna(0)
 
         connection.close()
 
         result = {
             "coeficiente": round(model.coef_[0], 2),
             "interseccion": round(model.intercept_, 2),
-            "predicciones": df_weekly.to_dict(orient="records")
+            "predicciones": df_predictions.to_dict(orient="records")
         }
         return jsonify(result), 200
 
