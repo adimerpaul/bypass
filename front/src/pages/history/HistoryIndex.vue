@@ -3,8 +3,19 @@
     <q-card>
       <q-card-section class="q-pa-xs">
         <div class="row">
+<!--          <div class="col-12 col-md-2">-->
+<!--            <q-input v-model="date" type="date" label="Fecha" outlined dense :loading="loading" />-->
+<!--          </div>-->
+          <div class="col-12 col-md-2 text-center">
+            <q-select v-model="insumo" :options="insumos" label="Insumo" outlined dense :loading="loading"
+                      emit-value map-options
+            />
+          </div>
           <div class="col-12 col-md-2">
-            <q-input v-model="date" type="date" label="Fecha" outlined dense :loading="loading" />
+            <q-input v-model="fechaInicio" type="date" label="Fecha Inicio" outlined dense :loading="loading" />
+          </div>
+          <div class="col-12 col-md-2">
+            <q-input v-model="fechaFin" type="date" label="Fecha Fin" outlined dense :loading="loading" />
           </div>
           <div class="col-12 col-md-2 text-center">
             <q-btn @click="buyGet" class="text-bold" label="Buscar" color="primary" icon="search" no-caps :loading="loading" />
@@ -46,6 +57,15 @@
                 <td class="q-pa-none q-ma-none">{{ $filters.formatdMYHi(buy.date+' '+buy.time) }}</td>
               </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-right text-bold">Total</td>
+                  <td class="text-bold">{{ totalQuantity }}</td>
+                  <td class="text-bold"></td>
+                  <td class="text-bold"></td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
             </q-markup-table>
 <!--            <pre>{{ buys }}</pre>-->
           </div>
@@ -84,6 +104,15 @@
                 <td class="q-pa-none q-ma-none">{{ $filters.formatdMYHi(deregistration.date+' '+deregistration.time) }}</td>
               </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-right text-bold">Total</td>
+                  <td class="text-bold">{{ totalQuantityDeregistrations }}</td>
+                  <td class="text-bold"></td>
+                  <td class="text-bold"></td>
+                  <td colspan="2"></td>
+                </tr>
+              </tfoot>
             </q-markup-table>
 <!--            <pre>{{ deregistrations }}</pre>-->
           </div>
@@ -103,13 +132,31 @@ export default {
       date: moment().format("YYYY-MM-DD"),
       buys: [],
       deregistrations: [],
-      loading: false
+      loading: false,
+      insumos: [],
+      insumo: '',
+      fechaInicio: moment().format("YYYY-MM-DD"),
+      fechaFin: moment().format("YYYY-MM-DD")
     };
   },
   mounted() {
     this.buyGet();
+    this.insumosGet();
   },
   methods: {
+    insumosGet() {
+      this.insumos = [];
+      this.insumos.push({label: 'Todos', value: ''});
+      this.$axios.get("insumos").then(response => {
+        response.data.forEach(product => {
+          if (product.status === 'ACTIVE'){
+            this.insumos.push({label: product.name, value: product.id});
+          }
+        });
+      }).catch(error => {
+        this.$alert.error(error.response.data.message);
+      });
+    },
     deregistrationAnular(id) {
       this.$alert.confirm('¿Está seguro de anular la baja?').onOk(() => {
         this.$axios.put(`deregistrationsAnular/${id}`).then((data) => {
@@ -136,7 +183,9 @@ export default {
       this.loading = true;
       this.$axios.get("buys", {
         params: {
-          date: this.date
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin,
+          insumo: this.insumo
         }
       }).then(response => {
         this.buys = response.data.buys;
@@ -146,6 +195,24 @@ export default {
       }).finally(() => {
         this.loading = false;
       });
+    }
+  },
+  computed: {
+    totalQuantity() {
+      let sum = 0;
+      if (this.buys.length === 0) return sum;
+      this.buys.forEach(buy => {
+        sum += parseFloat(buy.quantity);
+      });
+      return sum.toFixed(2);
+    },
+    totalQuantityDeregistrations() {
+      let sum = 0;
+      if (this.deregistrations.length === 0) return sum;
+      this.deregistrations.forEach(deregistration => {
+        sum += parseFloat(deregistration.quantity);
+      });
+      return sum.toFixed(2);
     }
   }
 };
