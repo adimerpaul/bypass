@@ -9,11 +9,14 @@
           <div class="col-12 col-md-3 q-pa-xs">
             <q-input v-model="fechaFin" label="Fecha Fin" type="date" outlined dense />
           </div>
-          <div class="col-12 col-md-3 q-pa-xs">
+          <div class="col-12 col-md-2 q-pa-xs">
             <q-select v-model="mesa" label="Mesa" outlined dense :options="['TODO','MESA','LLEVAR','DELIVERY','PEDIDOS YA']" />
           </div>
-          <div class="col-12 col-md-3 text-center">
+          <div class="col-12 col-md-2 ">
             <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
+          </div>
+          <div class="col-12 col-md-2 text-right">
+            <q-btn label="Excel" color="green" @click="excelExport"  :loading="loading" no-caps icon="print" class="text-bold" />
           </div>
           <div class="col-12 col-md-4 text-right">
             <q-btn label="Caja Chica" color="indigo" @click="cajaClick"  :loading="loading" no-caps icon="attach_money" class="text-bold" />
@@ -162,6 +165,7 @@ import moment from "moment";
 import Card2Component from "components/Card2Component.vue";
 import { Printd } from 'printd'
 import {Imprimir} from "src/addons/Imprimir";
+import {Excel} from "src/addons/Excel";
 
 export default {
   name: 'IndexPage',
@@ -196,6 +200,23 @@ export default {
     this.ultimaCajaGet();
   },
   methods: {
+    excelExport(){
+      let data = [{
+        sheet: "productocementos",
+        columns: [
+          // {label: "Categoria Producto", value: "categoria"},
+          {label: "Fecha", value: "date"},
+          {label: "Tipo", value: "type"},
+          {label: "Descripcion", value: "descripcion"},
+          {label: "Name", value: "name"},
+          {label: "Total", value: "total"},
+          {label: "Usuario", value: "user.name"}
+        ],
+        content: this.sales
+      }]
+
+      const excel = Excel.export(data, "Reporte de Productos ladrillo");
+    },
     printCajaClick(){
       if(this.cajaChica?.monto ==0){
         this.$alert.error('Debe registrar Caja Chica');
@@ -204,7 +225,7 @@ export default {
       let cadena =''
     let tabla=''
     let contenido=''
-      
+
       tabla='<table class=\'tab2\'><tr><th>DESCRIPCION</th><th>PROVEEDOR</th><th>TOTAL</th></tr>'
       this.detalleGasto.forEach(r => {
           contenido+='<tr><td>'+r.descripcion+'</td><td>'+r.name+'</td><td>'+r.total+'</td></tr>'
@@ -260,12 +281,12 @@ export default {
 
       <div style='text-align:center'><img class='imagen' src="logo2.png" width="70" ></div>
       <div class='titulo1'>
-     
+
       </div>
       <div class='titulo2'>AV. TACNA ENTRE JAEN Y TOMAS FRIAS</div>
       <table class='tab1'><tr><td>`+this.fechaFin+`</td></tr></table><br>
       ${tabla}
-  
+
     </div>`
     // }
     document.getElementById('myelement').innerHTML = cadena
@@ -301,7 +322,7 @@ export default {
     getCaja(){
       this.loading = true;
       this.$axios.post('/totalCaja',{ini:this.fechaInicio,fin:this.fechaFin}).then(response => {
-        this.caja=response.data  
+        this.caja=response.data
       }).catch(error => {
         console.error(error);
         this.$alert.error('Error Caja');
@@ -365,7 +386,7 @@ export default {
         this.detalleGasto=[]
         this.sales = response.data
         this.sales.forEach(r => {
-          if (r.type === 'EGRESO' && r.status !== 'ANULADO') 
+          if (r.type === 'EGRESO' && r.status !== 'ANULADO')
             this.detalleGasto.push(r)
         });
         this.gananciaGet()
@@ -406,7 +427,7 @@ export default {
     egresos() {
       let total = 0;
       this.sales.forEach(sale => {
-        if (sale.type === 'EGRESO' && sale.status !== 'ANULADO') 
+        if (sale.type === 'EGRESO' && sale.status !== 'ANULADO')
         total += sale.total;
       });
       return total;
@@ -416,7 +437,7 @@ export default {
       this.caja.forEach(r => {
         total = total + parseFloat(r.monto)
       });
-      return total; 
+      return total;
     },
     totalGasto() {
       return this.totalCaja - this.egresos;
