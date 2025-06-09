@@ -210,7 +210,9 @@ export default {
           {label: "Descripcion", value: "descripcion"},
           {label: "Name", value: "name"},
           {label: "Total", value: "total"},
-          {label: "Usuario", value: "user.name"}
+          {label: "Usuario", value: "user.name"},
+          // mesa
+          {label: "Mesa", value: "mesa"}
         ],
         content: this.sales
       }]
