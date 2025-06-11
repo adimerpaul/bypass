@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
-    "apexcharts": "^4.2.0",
+    "apexcharts": "^4.7.0",
     "axios": "^1.2.1",
     "conversor-numero-a-letras-es-ar": "^1.0.3",
     "json-as-xlsx": "^2.5.6",

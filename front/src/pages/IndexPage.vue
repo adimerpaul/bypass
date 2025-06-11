@@ -16,7 +16,28 @@
             <q-btn label="Buscar" color="indigo" @click="salesGet"  :loading="loading" no-caps icon="search" class="text-bold" />
           </div>
           <div class="col-12 col-md-2 text-right">
-            <q-btn label="Excel" color="green" @click="excelExport"  :loading="loading" no-caps icon="print" class="text-bold" />
+<!--            <q-btn label="Excel" color="green" @click="excelExport"  :loading="loading" no-caps icon="print" class="text-bold" />-->
+<!--            btn dropdown-->
+            <q-btn-dropdown label="Exportar" no-caps color="green" auto-close>
+              <q-item clickable v-ripple @click="excelExport">
+                <q-item-section avatar>
+                  <q-icon name="save_alt" />
+                </q-item-section>
+                <q-item-section>Excel</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple @click="printCajaClick">
+                <q-item-section avatar>
+                  <q-icon name="print" />
+                </q-item-section>
+                <q-item-section>Imprimir Caja</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple @click="salesGet">
+                <q-item-section avatar>
+                  <q-icon name="refresh" />
+                </q-item-section>
+                <q-item-section>Recargar</q-item-section>
+              </q-item>
+            </q-btn-dropdown>
           </div>
           <div class="col-12 col-md-4 text-right">
             <q-btn label="Caja Chica" color="indigo" @click="cajaClick"  :loading="loading" no-caps icon="attach_money" class="text-bold" />

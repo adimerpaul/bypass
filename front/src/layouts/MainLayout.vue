@@ -126,6 +126,8 @@ export default {
         { title: 'Productos', icon: 'shopping_cart', to: '/products' },
         { title: 'Usuarios', icon: 'people', to: '/users' },
         { title: 'Clientes', icon: 'person', to: '/clients' },
+        // reports
+        { title: 'Reportes', icon: 'insights', to: '/reports' },
         // { title: 'Modelo Predictivo', icon: 'analytics', to: '/predictive' },
       ],
     };
