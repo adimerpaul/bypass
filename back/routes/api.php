@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -86,6 +87,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/caja', [\App\Http\Controllers\CajaController::class, 'store']);
     Route::post('/ultimaCaja', [\App\Http\Controllers\CajaController::class, 'ultimaCaja']);
     Route::post('/totalCaja', [\App\Http\Controllers\CajaController::class, 'totalCaja']);
+
+    Route::post('/reportTipo', [ReportController::class, 'reporteTipo']);
 
 });
 
