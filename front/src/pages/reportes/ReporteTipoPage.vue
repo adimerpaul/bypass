@@ -43,6 +43,7 @@
         <tr style="background: #f0f0f0">
           <th>#</th>
           <th>Mesa</th>
+          <th>Cantidad</th>
           <th>Total (Bs)</th>
         </tr>
         </thead>
@@ -50,6 +51,7 @@
         <tr v-for="(r, index) in reporteData" :key="r.mesa">
           <td>{{ index + 1 }}</td>
           <td>{{ r.mesa }}</td>
+          <td>{{ r.cantidad }}</td>
           <td style="text-align: right">{{ r.total.toFixed(2) }}</td>
         </tr>
         </tbody>
@@ -84,7 +86,10 @@ export default {
           categories: []
         },
         dataLabels: {
-          enabled: true
+          enabled: true,
+          formatter: function (_, opts) {
+            return opts.w.config.series[0].data[opts.dataPointIndex].customData
+          }
         },
         legend: {
           show: false
@@ -138,7 +143,13 @@ export default {
         this.chartOptions.xaxis.categories = data.map(d => d.mesa)
         this.chartSeries = [{
           name: 'Ganancia',
-          data: data.map(d => d.total)
+          data: data.map(d => ({
+            x: d.mesa,
+            y: d.total,
+            fillColor: '#43a047',
+            // Mostramos: "144 Bs (3)"
+            customData: `${d.total} Bs (${d.cantidad})`
+          }))
         }]
       } catch (err) {
         this.$alert.error('Error al generar el reporte', err.message || 'Error desconocido')
