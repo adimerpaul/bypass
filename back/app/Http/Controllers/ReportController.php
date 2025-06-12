@@ -16,7 +16,8 @@ class ReportController extends Controller
 
         $ventas = Sale::select(
             'mesa',
-            DB::raw("SUM(total) as total")
+            DB::raw("SUM(total) as total"),
+            DB::raw("COUNT(*) as cantidad")
         )
             ->whereBetween('date', [$request->fechaInicio, $request->fechaFin])
             ->where('status', '!=', 'ANULADO')
