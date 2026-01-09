@@ -114,7 +114,8 @@
                       <q-btn color="green" label="Comprar" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="pay" :loading="loading"/>
                   </div>
                   <div class="col-12 q-pa-xs">
-                    <q-btn color="red" label="Egreso" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="deregistration" :loading="loading"/>
+<!--                    <pre>{{$store.user.role}}</pre>-->
+                    <q-btn color="red" v-if="$store.user.role == 'ADMIN'" label="Egreso" dense no-caps class="full-width text-bold" size="lg" icon="shopping_cart" @click="deregistration" :loading="loading"/>
                   </div>
                 </div>
               </q-card-section>
