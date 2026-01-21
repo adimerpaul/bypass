@@ -56,8 +56,10 @@
       </template>
       <template v-slot:body-cell-stock="props">
         <q-td :props="props" class="text-bold" :class="`text-${props.row.stock < 300 ? 'negative' : 'positive'}`">
-          <input v-model="props.row.stock"  type="number" class="q-pa-xs" style="width: 100px;" @change="insumoStockUpdate(props.row)">
+          <input v-model="props.row.stock"  type="number" class="q-pa-xs" style="width: 100px;" @change="insumoStockUpdate(props.row)"
+                 :disabled="$store.user.role !== 'ADMIN'"/>
           {{ props.row.stock }}
+<!--          <pre>{{$store.user}}</pre>-->
         </q-td>
       </template>
     </q-table>
