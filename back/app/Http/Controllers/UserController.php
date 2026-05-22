@@ -38,7 +38,7 @@ class UserController extends Controller{
     }
 
     public function listUser(){
-        return User::where('role','VENDEDOR')->orderBy('id', 'desc')->get();
+        return User::orderBy('name', 'asc')->get();
 
     }
     public function store(Request $request){
